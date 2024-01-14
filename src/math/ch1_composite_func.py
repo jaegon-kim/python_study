@@ -1,7 +1,7 @@
 import numpy as np 
 
 
-// https://toyourlight.tistory.com/4
+# https://toyourlight.tistory.com/4
 
 def linear(x):
     return 2 * x
