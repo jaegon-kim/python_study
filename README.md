@@ -3,7 +3,7 @@
 # Goal 1 - Python Programming - Deep learning & Mathmatics
 https://toyourlight.tistory.com/4
 
-* Current : https://toyourlight.tistory.com/6
+* Current : https://toyourlight.tistory.com/8
 
 
 # Goal 2 - Natural Language Processing with Deep Learning
