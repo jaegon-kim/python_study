@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 
 # https://toyourlight.tistory.com/5
 
+# 미분(differentiation), 도함수(derivative)
+# 함수 y=f(x)에서 도함수 f'(x)를 구하는 것을 함수 f(x)를 x에 대하여 미분한다고하며 그 계산법을 미분법이라고 한다.
+
 def log(x):
     return np.log(x)
 
