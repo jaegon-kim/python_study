@@ -31,19 +31,19 @@ def chain_multiple_deriv_add(list_func, x, y):
     f1 = list_func[0] # x + y
     f2 = list_func[1] # sigmoid:1 / (1 + np.exp(-x))
 
-    # ∂(f1)/∂x
+    # ∂(f1)/∂x : f1 = x + y를 x로 편미분
     df1_dx = 1
     #df1_dx = y
 
-    # ∂(f1)/∂y
+    # ∂(f1)/∂y : f1 = x + y를 y로 편미분
     df1_dy = 1
     #df1_dy = x
 
     # ∂(f2(f1))/∂x(f1)
     df2f1_df1 = derive(f2, f1(x, y))
 
-    # ∂(f2(f1))/∂x = ∂(f2(f1))/∂(f1) x ∂(f1)/∂x
-    # ∂(f2(f1))/∂y = ∂(f2(f1))/∂(f1) x ∂(f1)/∂y
+    # ∂(f2(f1))/∂x = ∂(f2(f1))/∂(f1) x ∂(f1)/∂x : 합성 함수에 chain rule 적용
+    # ∂(f2(f1))/∂y = ∂(f2(f1))/∂(f1) x ∂(f1)/∂y : 합성 함수에 chain rule 적용
     return df2f1_df1 * df1_dx, df2f1_df1 * df1_dy
 
 func_list = [multiple_func, sigmoid]
