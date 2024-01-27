@@ -1,4 +1,4 @@
-# https://toyourlight.tistory.com/6dd
+# https://toyourlight.tistory.com/6
 # composite function
 # func 1: g(x, y) = x + y
 # func 2: f(x) = sigmoid(@) = 1 / (1 + exp(-x))
