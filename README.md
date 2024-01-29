@@ -55,11 +55,17 @@ https://toyourlight.tistory.com/14 (로지스틱 회귀 구현하기)
 
 https://toyourlight.tistory.com/16 (softmax)
 
-https://toyourlight.tistory.com/17
-https://toyourlight.tistory.com/18
+https://toyourlight.tistory.com/17 (softmax, cross entropy를 이용한 classification)
+
+https://toyourlight.tistory.com/18 (multi classification with one data entry)
  * ch18_multi_classify_softmax.py
+
+https://toyourlight.tistory.com/19 (multi classification with data set)
  * ch18_multi_classify_softmax2.py
  * ch18_multi_classify_softmax_torch.py
+
+https://toyourlight.tistory.com/20 (Single Layer Perceptron)
+ * Activation function: sigmoid(0/1로 변환), softmax(classification 별 확률로 변환)
 
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
