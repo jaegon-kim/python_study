@@ -49,7 +49,17 @@ https://toyourlight.tistory.com/12 (선형 회귀)
 https://toyourlight.tistory.com/13 (입력 특성이 2개인 선형 회귀)
  * ch13_multi_attribute.py
 
-current: https://toyourlight.tistory.com/14 (로지스틱 회귀 구현하기)
+https://toyourlight.tistory.com/14 (로지스틱 회귀 구현하기)
+ * ch14_logistic_regression.py
+ * ch14_logistic_regression_pytorch.py
+
+https://toyourlight.tistory.com/16 (softmax)
+
+https://toyourlight.tistory.com/17
+https://toyourlight.tistory.com/18
+ * ch18_multi_classify_softmax.py
+ * ch18_multi_classify_softmax2.py
+ * ch18_multi_classify_softmax_torch.py
 
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
