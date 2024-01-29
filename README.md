@@ -71,6 +71,12 @@ https://toyourlight.tistory.com/20 (Single Layer Perceptron)
 https://toyourlight.tistory.com/21 (Limitation of single layer perceptron - XOR problem)
  * ch21_or_gatew_single_layer_perceptron.py
 
+https://toyourlight.tistory.com/22 (Limitation of single layer perceptron - Linear regression)
+ * ch22_linear_regression_single_layer_perceptron.py
+ * ch22_linear_regression_single_layer_perceptron2.py
+
+https://toyourlight.tistory.com/23 (MLP - OXR problem)
+
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
 next:https://toyourlight.tistory.com/11
