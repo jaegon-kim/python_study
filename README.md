@@ -82,6 +82,15 @@ https://toyourlight.tistory.com/25
  * ch25_xor_gateway_mlp.py
  * ch25_xor_gateway_mlp_torch.py
 
+https://toyourlight.tistory.com/26 (MLP - non-linear regrssion)
+https://toyourlight.tistory.com/27
+ * 시그모이드 도함수의 값은 원래 시그모이드의 최대 1/4 밖에 되지 않는다.
+ * 활성화 함수가 시그모이드인 복잡한 MLP에서는 도함수 값이 점점 0을 향해 간다.
+ * 입력에 가까운 레이어의 가중치 값은 업데이트가 잘 되지 않는, 존재감이 없어지는 일이 발생 -> 기울기 손실(Gradient Vanishing) 문제 
+  * ReLU(x): Rectified Linear Unit (정류된 선형 단위)
+https://toyourlight.tistory.com/27 (구현)
+ * ch28_non_linear_regression_mlp.py
+ * ch28_non_linear_regression_mlp_torch.py
 
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
