@@ -75,7 +75,13 @@ https://toyourlight.tistory.com/22 (Limitation of single layer perceptron - Line
  * ch22_linear_regression_single_layer_perceptron.py
  * ch22_linear_regression_single_layer_perceptron2.py
 
-https://toyourlight.tistory.com/23 (MLP - OXR problem)
+https://toyourlight.tistory.com/23 (MLP - OXR problem 기초이론)
+ * https://ynebula.tistory.com/22 (보충 설명, XOR MLP의 XY 좌표 설명)
+https://toyourlight.tistory.com/24 (MLP - OXR 도함수 도출)
+https://toyourlight.tistory.com/25
+ * ch25_xor_gateway_mlp.py
+ * ch25_xor_gateway_mlp_torch.py
+
 
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12

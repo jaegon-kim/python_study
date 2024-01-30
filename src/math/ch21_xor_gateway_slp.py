@@ -71,6 +71,37 @@ pred, loss = logistics_forward(input, target_or, W, B)
 print('after pred: ', pred)
 print('after loss: ', loss)
 
+print('W: ', W)
+print('B: ', B)
+
+
+print('------------- Learning NAND ------------------ ')
+
+W = np.random.randn(2, 1)
+B = np.random.randn(1, 1)
+
+print('W: ', W)
+print('B: ', B)
+
+learning_rate = 1
+
+
+pred, loss = logistics_forward(input, target_nand, W, B)
+print('before pred: ', pred)
+print('before loss: ', loss)
+
+for i in range(100):
+    dL_dW, dL_dB = loss_gradient(input, target_nand, W, B)
+    W = W + -1 * learning_rate * dL_dW
+    B = B + -1 * learning_rate * dL_dB
+
+pred, loss = logistics_forward(input, target_nand, W, B)
+print('after pred: ', pred)
+print('after loss: ', loss)
+
+print('W: ', W)
+print('B: ', B)
+
 
 print('------------- Learning XOR ------------------ ')
 
@@ -93,6 +124,9 @@ pred, loss = logistics_forward(input, target_xor, W, B)
 print('after pred: ', pred)
 print('after loss: ', loss)
 
+
+print('W: ', W)
+print('B: ', B)
 
 
 
