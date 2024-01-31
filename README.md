@@ -4,7 +4,7 @@
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/%EB%94%A5%EB%9F%AC%EB%8B%9D%EA%B3%BC%20%EC%88%98%ED%95%99
 
-### 함수와 합성 합수
+### 기초 수학
 https://toyourlight.tistory.com/4
 * src/math/ch1_composite_func.py
 
@@ -92,6 +92,24 @@ https://toyourlight.tistory.com/27 (구현)
  * ch28_non_linear_regression_mlp.py
  * ch28_non_linear_regression_mlp_torch.py
 
+https://toyourlight.tistory.com/29 (지수 가중 이동 평균, Exponentially Weighted Moving Average)
+https://toyourlight.tistory.com/30 
+ * ch30_exp_weighted_moving_avg.py
+
+https://toyourlight.tistory.com/31 (경사 하강법의 문제점)
+ * ch31_gradient_descent.py
+
+https://toyourlight.tistory.com/32 (경사 하강법의 개선, Momentum, RMSprop)
+ * ch32_momentum.py
+ * ch32_RMSprop.py
+
+https://toyourlight.tistory.com/33 (경사 하강업의 개선, Adam)
+ * ch32_adam.py
+
+https://toyourlight.tistory.com/34
+ * ch34_enhance_softmax_backward.py
+
+https://toyourlight.tistory.com/35 (Minibatch & Shuffle)
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
 next:https://toyourlight.tistory.com/11
