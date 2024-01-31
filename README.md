@@ -36,6 +36,8 @@ https://toyourlight.tistory.com/36
 
 ### Numpy Deep Learning
 
+https://toyourlight.tistory.com/74 ()
+
 https://toyourlight.tistory.com/11
  * 참고: https://heytech.tistory.com/362 (나중에 따로 볼만한 내용임)
  * 참조: http://infoso.kr/?p=2645 (∑연산 성질. 오차 제곱 합에 대한 편미분) 
@@ -110,6 +112,17 @@ https://toyourlight.tistory.com/34
  * ch34_enhance_softmax_backward.py
 
 https://toyourlight.tistory.com/35 (Minibatch & Shuffle)
+ * ch35_gradient_descent.py
+ * ch35_stochastic_gradient_descent.py
+ * ch35_mini_batch.py
+ * ch35_mini_batch_GD_shuffle.py
+
+https://toyourlight.tistory.com/38 (Standardiztion, Normalization)
+
+
+https://toyourlight.tistory.com/48 (CNN)
+ch48_cnn.py
+
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
 next:https://toyourlight.tistory.com/11
