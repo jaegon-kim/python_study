@@ -35,6 +35,4 @@ ax[1][1].imshow(filter, cmap='gray')
 #plt.show()
 
 
-from google.colab import drive
-
 

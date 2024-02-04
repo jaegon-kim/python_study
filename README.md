@@ -123,6 +123,18 @@ https://toyourlight.tistory.com/38 (Standardiztion, Normalization)
 https://toyourlight.tistory.com/48 (CNN)
 ch48_cnn.py
 
+https://toyourlight.tistory.com/66 (RNN)
+ * DNN(wx + b로 불리는 완전 연길 기반 인공 신경망 모들) - 입력 특성과 목적 특성간의 '관계'를 찾는 것임. 특성 값들의 배열 순서에는 의미가 없음 (입력 데이트의 특성의 열을 바꾸어 입력해도 훈련에는 아무런 변화가 없다)
+
+
+
+https://toyourlight.tistory.com/71 (RNN - Many to One)
+ * ch66_RNN_many2one.py - 컴파일 에러 발생 (수정 필요함) 
+
+https://toyourlight.tistory.com/73 (RNN - Many to Many)
+ * ch66_RNN_many2many.py 
+ * vanishing gradient 문제 해결
+
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
 next:https://toyourlight.tistory.com/11
