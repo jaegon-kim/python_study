@@ -146,3 +146,6 @@ https://wikidocs.net/book/2155
 
 ## Metaplot library Usage References
 https://jehyunlee.github.io/2021/07/10/Python-DS-80-mpl3d2/
+
+## 허깅 페이스로 한국어 번역기 만들기 Tutorial
+https://metamath1.github.io/blog/posts/gentle-t5-trans/gentle_t5_trans.html?utm_source=pytorchkr
