@@ -149,3 +149,7 @@ https://jehyunlee.github.io/2021/07/10/Python-DS-80-mpl3d2/
 
 ## 허깅 페이스로 한국어 번역기 만들기 Tutorial
 https://metamath1.github.io/blog/posts/gentle-t5-trans/gentle_t5_trans.html?utm_source=pytorchkr
+
+## DistilBERT (Distilled BERT, 지식 증류 기반 BERT)
+ - 교사 BERT를 이용해서 학생 BERT를 학습 시킴
+https://ariz1623.tistory.com/312
