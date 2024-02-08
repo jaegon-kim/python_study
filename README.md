@@ -143,6 +143,9 @@ next:https://toyourlight.tistory.com/11
 ## Goal 2 - Natural Language Processing with Deep Learning
 https://wikidocs.net/book/2155
 
+Vector, Matrix, Tensor 
+* https://wikidocs.net/52460
+
 
 ## Metaplot library Usage References
 https://jehyunlee.github.io/2021/07/10/Python-DS-80-mpl3d2/
