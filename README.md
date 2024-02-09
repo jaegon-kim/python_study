@@ -139,6 +139,9 @@ https://toyourlight.tistory.com/73 (RNN - Many to Many)
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
 next:https://toyourlight.tistory.com/11
 
+## Transformer 
+ https://metamath1.github.io/2021/11/11/transformer.html
+ https://colab.research.google.com/github/metamath1/ml-simple-works/blob/master/transformer/annotated_transformer.ipynb
 
 ## Goal 2 - Natural Language Processing with Deep Learning
 https://wikidocs.net/book/2155
