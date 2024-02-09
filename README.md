@@ -165,3 +165,6 @@ https://metamath1.github.io/blog/posts/gentle-t5-trans/gentle_t5_trans.html?utm_
  - 교사 BERT를 이용해서 학생 BERT를 학습 시킴
  - 
 https://ariz1623.tistory.com/312
+
+## minGPT (Andrej Kapathy)
+https://github.com/karpathy/minGPT
