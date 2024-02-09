@@ -167,4 +167,5 @@ https://metamath1.github.io/blog/posts/gentle-t5-trans/gentle_t5_trans.html?utm_
 https://ariz1623.tistory.com/312
 
 ## minGPT (Andrej Kapathy)
-https://github.com/karpathy/minGPT
+* https://github.com/karpathy/minGPT
+* Let’s build GPT - GPT를 밑바닥부터 만들어 봅시다 (https://discuss.pytorch.kr/t/geeknews-lets-build-gpt-gpt/958)
