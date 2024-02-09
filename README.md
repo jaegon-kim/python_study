@@ -159,7 +159,7 @@ https://metamath1.github.io/blog/posts/gentle-t5-trans/gentle_t5_trans.html?utm_
 
 ## BERT
  - MLM(Masked Language Model) 학습: BERT는 사전 훈련된 언어 모델로, 대량의 텍스트 데이터를 사용하여 사전에 학습됩니다. 이 모델은 주어진 문장에 빈칸을 만들고 해당 빈칸에 알맞는 단어를 맞춘다.
- - ERT는 MLM 이외에도 NSP(Next Sentence Prediction)라고 불리는 다음 문장 예측 작업을 함께 사용합니다. NSP 작업은 주어진 두 문장을 모델에 입력으로 주고, 모델은 이 두 문장이 이어진 문장인지 아니면 서로 무관한 문장인지를 예측하는 작업이다.
+ - BERT는 MLM 이외에도 NSP(Next Sentence Prediction)라고 불리는 다음 문장 예측 작업을 함께 사용합니다. NSP 작업은 주어진 두 문장을 모델에 입력으로 주고, 모델은 이 두 문장이 이어진 문장인지 아니면 서로 무관한 문장인지를 예측하는 작업이다.
 
 ## DistilBERT (Distilled BERT, 지식 증류 기반 BERT)
  - 교사 BERT를 이용해서 학생 BERT를 학습 시킴
