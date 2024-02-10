@@ -153,6 +153,9 @@ Vector, Matrix, Tensor
 ## Metaplot library Usage References
 https://jehyunlee.github.io/2021/07/10/Python-DS-80-mpl3d2/
 
+## dot product similarity
+https://www.aitimes.kr/news/articleView.html?idxno=17314
+
 ## 허깅 페이스
 https://huggingface.co/ (sorryvolki)
  * https://huggingface.co/jaegon-kim/distilbert-base-uncased-finetuned-emotion
