@@ -153,6 +153,10 @@ Vector, Matrix, Tensor
 ## Metaplot library Usage References
 https://jehyunlee.github.io/2021/07/10/Python-DS-80-mpl3d2/
 
+## Transformer 
+ * 진짜 주석달린 Transformer https://metamath1.github.io/2021/11/11/transformer.html
+ * The Illustrated Transformer https://nlpinkorean.github.io/illustrated-transformer/
+
 ## dot product similarity
 https://www.aitimes.kr/news/articleView.html?idxno=17314
 
