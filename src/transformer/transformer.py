@@ -381,8 +381,7 @@ model = make_model(V, V, N=2)
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 1200,
             torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
 
-for epoch in range(2):
-#for epoch in range(18):
+for epoch in range(18):
     model.train()
     print(f'{epoch} epoch train')
     run_epoch(data_gen2(V, 30, 20), model,
