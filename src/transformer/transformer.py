@@ -422,6 +422,7 @@ model.eval()
 # To use GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]]).to(device)
+
 src_mask = torch.ones(1, 1, 10).to(device)
 #src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]])
 #src_mask = torch.ones(1, 1, 10)
