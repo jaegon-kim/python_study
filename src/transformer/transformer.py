@@ -381,7 +381,7 @@ model = make_model(V, V, N=2)
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 1200,
             torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
 
-for epoch in range(18):
+for epoch in range(20):
     model.train()
     print(f'{epoch} epoch train')
     run_epoch(data_gen2(V, 30, 20), model,
@@ -421,10 +421,11 @@ model.eval()
 
 # To use GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 1, 9, 7]]).to(device)
+src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]]).to(device)
 src_mask = torch.ones(1, 1, 10).to(device)
-#src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 1, 9, 7]])
+#src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]])
 #src_mask = torch.ones(1, 1, 10)
+
 print(greedy_decode(model, src, src_mask, max_len=10, start_symbol=1))
 
 
