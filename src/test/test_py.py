@@ -18,5 +18,14 @@ def test_tokenizing():
         print(idx, ':', ch, end=", ")
     print()
 
+import copy
+def test_deep_copy():
+    original_list = [[1, 2, 3], [4, 5, 6]]
+    copied_list = copy.deepcopy(original_list)
+    original_list[0][0] = 100
+    print(original_list)
+    print(copied_list)
+
 test_reversed()
 test_tokenizing()
+test_deep_copy()

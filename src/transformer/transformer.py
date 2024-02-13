@@ -1,6 +1,7 @@
 # Reference
 # https://colab.research.google.com/drive/1oOTy4z1IQt0PXmox65JADucwQY6V6NsW
 
+import sys
 import numpy as np
 import torch
 import torch.nn as nn
@@ -184,9 +185,13 @@ class EncoderDecoder(nn.Module):
         self.generator = generator
 
     def forward(self, src, tgt, src_mask, tgt_mask):
-        return self.decode(
+        #print('  forward src: ', src.shape, ', mask: ', src_mask.shape)
+        #print('  forward tgt: ', tgt.shape, ', mask: ', tgt_mask.shape)
+        r = self.decode(
             self.encode(src, src_mask), src_mask, tgt, tgt_mask
         )
+        #print('  forward r  : ', r.shape)
+        return r
 
     def encode(self, src, src_mask):
         return self.encoder(self.src_embed(src), src_mask)
@@ -202,16 +207,20 @@ def make_model(src_vocab, tgt_vocab, N=6,
     position = PositionalEncoding(d_model, dropout)
 
     model = EncoderDecoder(
+        # Encoder
         # 1 attention layer + 1 feed forward layer
         Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N),
+        # Decoder
         # 2 attention layer + 1 feed forward layer
         Decoder(DecoderLayer(d_model, c(attn), c(attn), c(ff), dropout), N),
-
+        # Src Embeding
         nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
+        # Target Embeding
         nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
 
         Generator(d_model, tgt_vocab)
     )
+    #print('*model: \n', model)
 
     for p in model.parameters():
         if p.dim() > 1:
@@ -253,7 +262,8 @@ def data_gen2(V, batch, nbatches):
         data[:, 0] = 1
         src = data.clone()
         tgt = data.clone()
-        tgt[:, V//2:] += 1
+        tgt[:, (V//2):] += 1
+        #tgt[:, 5] -= 1
 
         yield Batch(src, tgt, 0)
 
@@ -382,11 +392,13 @@ model_opt = NoamOpt(model.src_embed[0].d_model, 1, 1200,
             torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
 
 for epoch in range(20):
+    # model goes into training mode
     model.train()
     print(f'{epoch} epoch train')
     run_epoch(data_gen2(V, 30, 20), model,
               SimpleLossCompute(model.generator, criterion, model_opt))
     print('eval')
+    # model goes out from training mode, and goes into evaluation mode
     model.eval()
     eval_loss = run_epoch(data_gen2(V, 30, 5), model,
             SimpleLossCompute(model.generator, criterion, None))
@@ -395,6 +407,7 @@ for epoch in range(20):
 def greedy_decode(model, src, src_mask, max_len, start_symbol):
     memory = model.encode(src, src_mask)
     ys = torch.ones(1, 1).fill_(start_symbol).type_as(src.data)
+    print('ys: ', ys)
 
     for i in range(max_len-1):
         print('ys.shape: ', ys.shape)
@@ -406,13 +419,16 @@ def greedy_decode(model, src, src_mask, max_len, start_symbol):
         print('out[:, -1].shape: ', out[:, -1].shape)
 
         prob = model.generator(out[:, -1])
+        print('prob: ', prob)
         print('prob.shape:', prob.shape)
 
         _, next_word = torch.max(prob, dim = 1)
+        print('next_word: ', next_word, ', next_word.data[0]: ', next_word.data[0])
         next_word = next_word.data[0]
 
         ys = torch.cat([ys,
                         torch.ones(1, 1).type_as(src.data).fill_(next_word)], dim=1)
+        print('ys: ', ys)
         print('\n')
     return ys
 
@@ -421,8 +437,9 @@ model.eval()
 
 # To use GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#src = torch.LongTensor([[1, 1, 1, 1, 1,    1, 1, 1, 1, 1]]).to(device)
 src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]]).to(device)
-
+                       # 1, 3, 4, 5, 6,    9, 8, 3, 10, 8
 src_mask = torch.ones(1, 1, 10).to(device)
 #src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]])
 #src_mask = torch.ones(1, 1, 10)
