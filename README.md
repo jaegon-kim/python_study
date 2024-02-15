@@ -179,3 +179,16 @@ https://ariz1623.tistory.com/312
 ## minGPT (Andrej Kapathy)
 * https://github.com/karpathy/minGPT
 * Let’s build GPT - GPT를 밑바닥부터 만들어 봅시다 (https://discuss.pytorch.kr/t/geeknews-lets-build-gpt-gpt/958)
+
+## sLLM 모델 
+* 메타의 ‘라마(Llama)-2 - 알파카(Alpaca)’
+* 제미나이 나노
+* 파이(Phi-2)-2
+* 미스트랄 7B
+
+국내
+*Huggiung Face: MoMo-70B, SOLAR-10.7B)
+*
+
+## RAG(Retrieval Augmented Generation)
+
