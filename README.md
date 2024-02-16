@@ -34,6 +34,35 @@ https://toyourlight.tistory.com/36
 * min-max 정규화 (0~1 까지의 값으로 normalziation)
 * Z score 표준화 (deviation/standard-deviation)
 
+### Activation Function
+
+ * 선형함수를 적층해 봤자 결국 선형함수가 됨. f(x) = y = WX 일때, y = f( f( f(x) ))로 적층해 봤자, y = W^3 X가 되어 선형함수가 되어 버림. Hidden Layer가 3개인 신경망과 1개인 신경망의 차이가 없다.
+ * 선형 함수에 비선형 함수를 합성하여 선형성을 없앤다.
+ * Ref: https://kevinitcoding.tistory.com/entry/%ED%99%9C%EC%84%B1%ED%99%94-%ED%95%A8%EC%88%98-%EC%A0%95%EC%9D%98%EC%99%80-%EC%A2%85%EB%A5%98-%EB%B9%84%EC%84%A0%ED%98%95-%ED%95%A8%EC%88%98%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EC%95%BC-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0
+
+ sigmoid()
+ * 무한대의 실수 값을 0~1사이의 확률값으로 변환한다. (2차 AI 혹한기 전까지 가장 보편적으로 사용된 Activation Function이다.)
+ * 입력 값의 절대 값이 커질 수 록 기울기가 0으로 수렴하는 단점이 있다.
+
+ tanh(): Hyperbolic Tangent Function
+ * 쌍곡선 함수. sigmoid와 비슷하개 생김. sigmoid 대비 기울기가 작아지지 않는 구간이 넓어서 양수 음수 모두 학습 효율이 뛰어나다. sigmoid의 대안으로 활용된다. 
+ * 기울기가 0으로 수렴하는 구간이 존재하여, 기울기 소실 문제에 대해 자유롭지는 않다.  
+
+ ReLu
+ * 입력값이 음수이면 0, 양수이면 그대로 흘려보냄. Sigmoid의 기울기 소실 문제를 해결함. 
+ * Layer를 깊게 쌓을 수 있음. ensamble 효과.
+ * 입력 값이 너무 커지면 모델이 입력 값에 편향된다. (max를 6이하로 제한)
+ * 음수 값이 들어오면 0이 되기 때문에 음수 값에서는 학습이 되지 않는다. (Dying ReLu, Dead Nueron)
+
+ Leaky ReLu
+ * Dying ReLu, Dead Nueron 문제 해결
+ * 입력 값에 1이하의 아주 작은 값을 곱함 
+ 
+ ELU (Exponential Linear Unit)
+ * ReLu의 장법을 포함하면서 단점을 최소화
+ * 음수가 들어오면 지수를 사용해 부드럽게 꺾어준다. (노이즈에 덜 민감한 효과)
+
+
 ### Numpy Deep Learning
 
 https://toyourlight.tistory.com/74 ()
