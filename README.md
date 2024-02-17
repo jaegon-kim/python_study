@@ -34,6 +34,25 @@ https://toyourlight.tistory.com/36
 * min-max 정규화 (0~1 까지의 값으로 normalziation)
 * Z score 표준화 (deviation/standard-deviation)
 
+## Loss Function
+
+ MSE (Mean Square Error)
+  * 차분의 제곱의 평균 (.. 편차와 유사 ..?)
+
+ Binary Cross Entropy Error (BCEE)
+  * 결과 값이 Binary 형태 일때 사용하기 적절한 Loss 함수 이다.
+  * 정답이 1인데, predict(W, B) = 0 이거나, 정답이 0인데, predict(W, B) = 1이면 오차가 크다.
+  * 정답이 0인데, predict(W, B) = 0 이거나, 정답이 1인데, predict(W, B) = 1이면 오차가 작다.
+  * '-log(x)' 와 '-log(1-x)'를 합쳐서 만든다.
+  * https://toyourlight.tistory.com/14 에 BCEE에 대해 설명한다.
+
+ Cross Entropy
+ 
+
+ KL Divergence (Kullback-Leibler Divergence)
+
+
+
 ### Activation Function
 
  * 선형함수를 적층해 봤자 결국 선형함수가 됨. f(x) = y = WX 일때, y = f( f( f(x) ))로 적층해 봤자, y = W^3 X가 되어 선형함수가 되어 버림. Hidden Layer가 3개인 신경망과 1개인 신경망의 차이가 없다.
@@ -41,8 +60,16 @@ https://toyourlight.tistory.com/36
  * Ref: https://kevinitcoding.tistory.com/entry/%ED%99%9C%EC%84%B1%ED%99%94-%ED%95%A8%EC%88%98-%EC%A0%95%EC%9D%98%EC%99%80-%EC%A2%85%EB%A5%98-%EB%B9%84%EC%84%A0%ED%98%95-%ED%95%A8%EC%88%98%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EC%95%BC-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0
 
  sigmoid()
- * 무한대의 실수 값을 0~1사이의 확률값으로 변환한다. (2차 AI 혹한기 전까지 가장 보편적으로 사용된 Activation Function이다.)
+ * 무한대의 실수 값을 0~1사이의 확률값으로 변환한다. Binary Classification에 많이 사용된다.
+ * 2차 AI 혹한기 전까지 가장 보편적으로 사용된 Activation Function이다.
  * 입력 값의 절대 값이 커질 수 록 기울기가 0으로 수렴하는 단점이 있다.
+ * https://toyourlight.tistory.com/14 : 선형 함수의 결과 값에 sigmoid를 적용하여, 이진 분류 1, 0을 만들 수 있다. (농구 선수의 성적을 기반으로 draft 성공/실패 분류 등) 
+                   
+softmax 
+ * 비선형 출력을 확률로 처리한다. (볼츠만 분포함수랑 유사)
+ * Sigmoid와 달리, 다중 분류로 사용한다. (여러 target에 대한 확률이 출력된다.) Transformer에서도 출력된 vocablary의 확률 리스트를 softmax로 구하고, 이중에서 최대 값을 선택하여 '생성'에 사용한다.
+ * 단점: 값이 지수함수로 변화해서 너무 커져서 overflow가 발생할 수 있다.   
+
 
  tanh(): Hyperbolic Tangent Function
  * 쌍곡선 함수. sigmoid와 비슷하개 생김. sigmoid 대비 기울기가 작아지지 않는 구간이 넓어서 양수 음수 모두 학습 효율이 뛰어나다. sigmoid의 대안으로 활용된다. 
@@ -65,7 +92,7 @@ https://toyourlight.tistory.com/36
 
 ### Numpy Deep Learning
 
-https://toyourlight.tistory.com/74 ()
+https://toyourlight.tistory.com/74 (목차)
 
 https://toyourlight.tistory.com/11
  * 참고: https://heytech.tistory.com/362 (나중에 따로 볼만한 내용임)

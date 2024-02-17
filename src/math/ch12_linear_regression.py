@@ -95,4 +95,5 @@ def animate(frame):
 
 ani = FuncAnimation(fig, animate, frames=train_W)
 
+plt.title("Mean Square Error Loss Function")
 plt.show()

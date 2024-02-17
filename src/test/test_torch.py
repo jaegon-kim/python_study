@@ -102,6 +102,24 @@ def test_max():
     print(max_value)       # 출력: tensor([3, 6, 9])
     print(max_indices)     # 출력: tensor([2, 2, 0])
 
+def test_autograd():
+    X = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0], requires_grad=True)
+    pX = torch.pow(X, 2)
+
+    # [4., 1., 0., 1., 4.], y = x^2 값이 나온다.
+    print(pX)
+
+    # tensor에 대해서 autograd를 할 수 없음. scalar (0차원 tensor) 값에 적용 가능한다.
+    # 손실함수 들이 주로 scalar 값을 만들어 내기 때문임.
+    #pX.backward()
+
+    # tensor의 값들을 모두 더해서, scalar 값으로 만들어 준다.
+    sum = torch.sum(pX)
+    sum.backward()
+
+    # [4., 1., 0., 1., 4.], y의 미분, y' = 2x 값이 나온다.
+    print(X.grad) 
+
 
 #test_cuda_available()
 #test_long_tensor()
@@ -109,4 +127,5 @@ def test_max():
 #test_squeeze()
 #test_data_gen2()
 #test_yield()
-test_max()
+#test_max()
+test_autograd()
