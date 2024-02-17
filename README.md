@@ -89,6 +89,26 @@ softmax
  * ReLu의 장법을 포함하면서 단점을 최소화
  * 음수가 들어오면 지수를 사용해 부드럽게 꺾어준다. (노이즈에 덜 민감한 효과)
 
+### Optimizer (최적화 방법)
+ 
+ Gradient Descent (경사 하강법)  https://heytech.tistory.com/380
+ * 문제점 1) Local Minimum에 빠지기 쉽다. 
+ * 문제점 2) Saddle Point 문제 : 기울기가 0이지만 극 값이 아닌 지점
+
+ Momentum (관성) https://heytech.tistory.com/382
+ * 관성을 줘서 추가로 이동하게 함. (Local Minimum에 빠지는 경우 대처 가능)
+
+ AdaGrad (Adaptive Gradient: 적응적 기울기) https://heytech.tistory.com/383
+ * Feature 별로 학습률을 Adaptive하게 조절함 (큰 기울기를 가져 학습이 많이된 변수는 학습률을 감소 시킴. )
+ * 단점: 학습이 오래 진행될 수록 학습률이 0에 가까줘지기 때문에 더이상 학습이 진행되지 않을 수 있음. (학습이 진행될 때 학습이 잘 이루어져 변수 값이 업데이트 되지 않는 것인지 아니면 학습률이 0에 가까워져서 학습이 안되는 것인지 알 수 없음)
+
+ RMSProp (Root Mean Sqaure Propagration) https://heytech.tistory.com/384
+ * 이전 time step에서의 기울기를 같은 비율로 누적하지 않고, 지수 이동 평균(Exponential Moving Average, EMA)를 활용하여 기울기를 업데이트 함. 최근 time step에서의 기울기는 많이 반영하고 먼 과거의 time step에서의 기울기는 조금만 반영함
+  * 효율적인 학습이 가능하고, AdaGrad 보다 학습을 오래 할 수 있음
+
+ Adam (Adaptive Moment Estimation(Adam)) https://heytech.tistory.com/385
+  * Momentum과 RMSProp의 장점을 결합한 것임. 
+  * 딥러닝에서 가장 많이 사용되어 오던 최적화 기법
 
 ### Numpy Deep Learning
 
