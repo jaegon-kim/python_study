@@ -43,9 +43,21 @@ def test_transpose():
     print('Wt: ', Wt.shape, '\n', Wt)
     print()
 
+def test_data_split():
+    np_array = np.arange(0, 16).reshape((4, 4))
+    print('np_array:\n', np_array)
+    x = np_array[:, 3]
+    print('np_array[:, 3]\n', x)
+
+    y = np_array[:, :3]
+    print('np_array[:, 3]\n', y)
+
+
 
 test_reshape()
 test_softmax_of_zero_weight()
 test_transpose()
+test_data_split()
+
 
 

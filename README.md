@@ -34,7 +34,7 @@ https://toyourlight.tistory.com/36
 * min-max 정규화 (0~1 까지의 값으로 normalziation)
 * Z score 표준화 (deviation/standard-deviation)
 
-## Loss Function
+### Loss Function
 
  MSE (Mean Square Error)
   * 차분의 제곱의 평균 (.. 편차와 유사 ..?)
@@ -202,8 +202,6 @@ ch48_cnn.py
 https://toyourlight.tistory.com/66 (RNN)
  * DNN(wx + b로 불리는 완전 연길 기반 인공 신경망 모들) - 입력 특성과 목적 특성간의 '관계'를 찾는 것임. 특성 값들의 배열 순서에는 의미가 없음 (입력 데이트의 특성의 열을 바꾸어 입력해도 훈련에는 아무런 변화가 없다)
 
-
-
 https://toyourlight.tistory.com/71 (RNN - Many to One)
  * ch66_RNN_many2one.py - 컴파일 에러 발생 (수정 필요함) 
 
@@ -214,6 +212,14 @@ https://toyourlight.tistory.com/73 (RNN - Many to Many)
 
 https://toyourlight.tistory.com/category/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/Numpy%20%EB%94%A5%EB%9F%AC%EB%8B%9D?page=12
 next:https://toyourlight.tistory.com/11
+
+## PyTorch로 시작하는 딥러닝 입문
+https://wikidocs.net/32471
+ * Scalar: 0 차원, Vector: 1차원, Matrix(2D Tensor): 2차원, Tensor: 3.. 차원
+ * 2D tensor: |t| = (batch size, dim)
+ * 3D tensor: |t| = (batch size, lenth, dim)
+
+next : https://wikidocs.net/54841
 
 ## Transformer 
  https://metamath1.github.io/2021/11/11/transformer.html
