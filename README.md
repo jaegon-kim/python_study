@@ -281,3 +281,6 @@ https://ariz1623.tistory.com/312
 
 ## RAG(Retrieval Augmented Generation)
 
+## Copilot chat
+* https://docs.github.com/en/copilot/github-copilot-chat/about-github-copilot-chat
+* 코드의 버그 수정 가능
