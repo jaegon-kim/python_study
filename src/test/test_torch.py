@@ -324,7 +324,191 @@ def linear_regression_model():
     pred = model(x_train)
     print('pred: ', pred)
 
+class LinearRegressionModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(1, 1)
+    
+    def forward(self, x):
+        return self.linear(x)
 
+
+def linear_regression_model_class():
+    x_train = torch.FloatTensor([
+        [1], [2], [3]
+    ])
+
+    y_train = torch.FloatTensor([
+        [2], [4], [6]
+    ])
+
+    model = LinearRegressionModel()
+    optimizer = optim.SGD(model.parameters(), lr=0.01)
+    epoches = 2000
+
+    for epoch in range(epoches + 1):
+        pred = model(x_train)
+        loss = F.mse_loss(pred, y_train)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if epoch % 100 == 0:
+            print('loss: ', loss.item())
+
+    pred = model(x_train)
+    print('pred: ', pred)
+
+
+def linear_regression_model_multi_dim():
+
+    x_train = torch.FloatTensor([
+                                    [73, 80, 75],
+                                    [93, 88, 93],
+                                    [89, 91, 90],
+                                    [96, 98, 100],
+                                    [73, 66, 70]
+                                ])
+
+    y_train = torch.FloatTensor([
+                                    [152],
+                                    [185],
+                                    [180],
+                                    [196],
+                                    [142]
+                                ])
+    model = nn.Sequential(
+        nn.Linear(3, 1)
+    )
+    #model = nn.Linear(3, 1)
+
+    # learning rate가 너무 크면, 기울기가 발샌한다.
+    # learning rate 0.0001 (1e-4)
+    #optimizer = optim.SGD(model.parameters(), lr=1e-4)
+    
+    # learning rate 0.00001 (1e-5)
+    optimizer = optim.SGD(model.parameters(), lr=1e-5)
+    epoches = 2000
+
+    for epoch in range(epoches + 1):
+        pred = model(x_train)
+        loss = F.mse_loss(pred, y_train)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if epoch % 100 == 0:
+            print('loss: ', loss.item())
+
+    pred = model(x_train)
+    print('pred: ', pred)
+
+
+from torch.utils.data import TensorDataset
+from torch.utils.data import DataLoader
+
+
+def test_mini_batch():
+    x_train = torch.FloatTensor([
+                                    [73, 80, 75],
+                                    [93, 88, 93],
+                                    [89, 91, 90],
+                                    [96, 98, 100],
+                                    [73, 66, 70]
+                                ])
+
+    y_train = torch.FloatTensor([
+                                    [152],
+                                    [185],
+                                    [180],
+                                    [196],
+                                    [142]
+                                ])
+    
+    dataset = TensorDataset(x_train, y_train)
+    dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+    model = nn.Sequential(
+        nn.Linear(3, 1)
+    )
+    # learning rate 0.00001 (1e-5)
+    optimizer = optim.SGD(model.parameters(), lr=1e-5)
+
+    nb_epoches = 20
+
+    for epoch in range(nb_epoches + 1):
+        for batch_idx, samples in enumerate(dataloader):
+            #print('batch_idx: ', batch_idx)
+            #print('samples: ', samples)
+            x_train, y_train = samples
+            pred = model(x_train)
+            loss = F.mse_loss(pred, y_train)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            print('loss: ', loss.item())
+    new_var =  torch.FloatTensor([[73, 80, 75]]) 
+    pred = model(new_var)
+    print('pred: ', pred)
+
+
+class CustomDataset(torch.utils.data.Dataset):
+    def __init__(self):
+        self.x_data = [
+                        [73, 80, 75],
+                        [93, 88, 93],
+                        [89, 91, 90],
+                        [96, 98, 100],
+                        [73, 66, 70]
+                      ]
+        self.y_data = [
+                        [152],
+                        [185],
+                        [180],
+                        [196],
+                        [142]
+                      ]
+    def __len__(self):
+        return len(self.x_data)
+
+    def __getitem__(self, idx):
+        x = torch.FloatTensor(self.x_data[idx])
+        y = torch.FloatTensor(self.y_data[idx])
+        return x, y
+
+
+def test_customdataset():
+    dataset = CustomDataset()
+    dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+    model = nn.Sequential(
+        nn.Linear(3, 1)
+    )
+    # learning rate 0.00001 (1e-5)
+    optimizer = optim.SGD(model.parameters(), lr=1e-5)
+
+    nb_epoches = 20
+
+    for epoch in range(nb_epoches + 1):
+        for batch_idx, samples in enumerate(dataloader):
+            #print('batch_idx: ', batch_idx)
+            #print('samples: ', samples)
+            x_train, y_train = samples
+            pred = model(x_train)
+            loss = F.mse_loss(pred, y_train)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            print('loss: ', loss.item())
+    new_var =  torch.FloatTensor([[73, 80, 75]]) 
+    pred = model(new_var)
+    print('pred: ', pred)
+
+
+
+torch.manual_seed(1)
 
 #test_cuda_available()
 #test_1d_tensor()
@@ -343,4 +527,8 @@ def linear_regression_model():
 #test_yield()
 #test_autograd()
 #linear_regression()
-linear_regression_model()
+#linear_regression_model()
+#linear_regression_model_class()
+#linear_regression_model_multi_dim()
+#test_mini_batch()
+test_customdataset()

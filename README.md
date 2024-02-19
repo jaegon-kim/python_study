@@ -219,7 +219,14 @@ https://wikidocs.net/32471
  * 2D tensor: |t| = (batch size, dim)
  * 3D tensor: |t| = (batch size, lenth, dim)
 
-next : https://wikidocs.net/54841
+1 Epoch 
+ * 모든 data set을 한번 학습하면 1 Epoch이다.
+
+Sample과 특성
+ * 특성: 종속 변수 y를 예측하기 위한 각각의 독립 변수 x (x1, x2, x3, x4 ....) 
+ * Sample: 셀수 있는 데이터 단위 구분 {x1, x2, x3 } --> Sample
+
+next : https://wikidocs.net/57805
 
 ## Transformer 
  https://metamath1.github.io/2021/11/11/transformer.html
