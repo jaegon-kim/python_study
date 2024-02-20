@@ -275,6 +275,8 @@ https://ariz1623.tistory.com/312
 * 파이(Phi-2)-2
 * 미스트랄 7B
 
+## RAG(Retrieval Augumented Generation)
+
 국내
 *Huggiung Face: MoMo-70B, SOLAR-10.7B)
 *
