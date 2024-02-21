@@ -2,7 +2,7 @@ from transformers import pipeline
 import pandas as pd
 
 def test_huggingface_pipeline_use():
-    '''
+
     text = """Dear Amazon, last week I ordered an Optimus Prime action figure \
     fromyour online store in Germany. Unfortunately, when I pened the package, \
     I discovered to my horror that I had been sent an action figure of Megatron\
@@ -10,38 +10,47 @@ def test_huggingface_pipeline_use():
     dilemma. To resolve the issue, I emand an exchange of Megatron for the \
     Optimus Prime figure I ordered. Enclosed are copies of my records concerning \
     this purchase. I expect to hear from you soon. Sincerely, Bumblebee."""
-    print("text-classification")
+
+    print("\n## text-classification")
     classifier = pipeline("text-classification")
     outputs = classifier(text)
-    print(pd.DataFrame(outputs))
+    print(" classification result: ", pd.DataFrame(outputs))
 
-    print("ner");
+    print("\n## ner");
     ner_tagger = pipeline("ner", aggregation_strategy="simple")
     outputs = ner_tagger(text)
     print(pd.DataFrame(outputs))
 
-    print("## question-answering")
+    print("\n## question-answering")
     reader = pipeline("question-answering")
     question = "What does the customer want?"
     outputs = reader(question=question, context=text)
-    print(pd.DataFrame([outputs]))
+    print(" question: ", question)
+    print(" answer  : ", pd.DataFrame([outputs]))
 
-    print("## summarization")
+    print("\n## summarization")
     summarizer = pipeline("summarization")
     outputs = summarizer(text, max_length=56, clean_up_tokenization_spaces=True)
-    print(outputs[0]['summary_text'])
+    print(" summarization : ",outputs[0]['summary_text'])
 
-    print('## translation_en_to_de')
+    print('\n## translation_en_to_de')
     translator = pipeline('translation_en_to_de', model="Helsinki-NLP/opus-mt-en-de")
     outputs = translator(text, clean_up_tokenization_spaces=True, min_length=100)
-    print(outputs[0]['translation_text'])
-    '''
-    
-    print('## translation_kr_to_en')
+    print(' Deutsch translation: ' , outputs[0]['translation_text'])
+
+def test_translate_kr2en():
+
     translastor = pipeline("translation", model="Helsinki-NLP/opus-mt-ko-en")
-    outputs = translastor("한국어를 영어로 번역해 주세요")
-    print(outputs[0]['translation_text'])
-    
+
+    try:
+        print('## Korean to English Translation')
+        while True:
+            kr_text = input("> ")
+            outputs = translastor(kr_text)
+            print(' [English translated]: ', outputs[0]['translation_text'])
+    except KeyboardInterrupt:
+        print(" .. Quit")
+
 from datasets import list_datasets
 from datasets import load_dataset
 
@@ -81,10 +90,8 @@ def test_model_tuning():
     model_ckpt = "distilbert-base-uncased"
     tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
 
-    print("cuda" if torch.cuda.is_available() else "cpu")
+    print("cuda is available" if torch.cuda.is_available() else "cpu is available")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    #device = torch.device('cpu')
-
     torch.cuda.empty_cache()
 
     num_labels = 6
@@ -102,6 +109,7 @@ def test_model_tuning():
     emotions_encoded = emotions.map(tokenize, batched=True, batch_size=None)
 
     # GPU 메모리가 부족한 경우, batch_size를 줄여 본다.
+
     #batch_size = 64
     batch_size = 32
 
@@ -212,9 +220,108 @@ def test_use_tuned_model():
     plt.ylabel("Class probability (%)")
     plt.show()
 
+
+
+def test_model_tuning_local_store(local_model_path):
+    model_ckpt = "distilbert-base-uncased"
+    tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
+
+    print("cuda is available" if torch.cuda.is_available() else "cpu is available")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.cuda.empty_cache()
+
+    num_labels = 6
+    model = (AutoModelForSequenceClassification
+         .from_pretrained(model_ckpt, num_labels=num_labels)
+         .to(device))
+
+    # 허깅페이스 허브에서 데이터 셋을 다운로드 해서, 미세 튜닝의 학습 데이터로 사용한다. 
+    # 허브에 약 5K개의 데이터 넷이 있는데 이중에서 emotion 데이터셋을 로딩한다.
+    emotions = load_dataset("emotion")
+
+    def tokenize(batch):
+        return tokenizer(batch["text"], padding=True, truncation=True)
+
+    emotions_encoded = emotions.map(tokenize, batched=True, batch_size=None)
+
+    # GPU 메모리가 부족한 경우, batch_size를 줄여 본다.
+
+    #batch_size = 64
+    batch_size = 32
+
+    logging_steps = len(emotions_encoded["train"])
+    model_name = f"{model_ckpt}-finetuned-emotion"
+    training_args = TrainingArguments(output_dir=model_name,
+                                    num_train_epochs=1,
+                                    learning_rate=2e-5,
+                                    per_device_train_batch_size=batch_size,
+                                    per_device_eval_batch_size=batch_size,
+                                    weight_decay=0.01,
+                                    evaluation_strategy="epoch",
+                                    disable_tqdm=False,
+                                    logging_steps=logging_steps,
+                                    push_to_hub=True,
+                                    save_strategy="epoch",
+                                    load_best_model_at_end=True,
+                                    log_level="error")
+
+    def compute_metrics(pred):
+        labels = pred.label_ids
+        preds = pred.predictions.argmax(-1)
+        f1 = f1_score(labels, preds, average="weighted")
+        acc = accuracy_score(labels, preds)
+        return {"accuracy": acc, "f1": f1}
+
+    '''
+    Trainer를 쓰기위해 hugging face access token이 필요하다.
+    https://huggingface.co/settings/tokens 에서 access token을 할당 받고,
+    `huggingface-cli login` 명령을 이용하여 acces token을 입력하자.
+    '''
+    trainer = Trainer(model=model, args=training_args,
+                  compute_metrics=compute_metrics,
+                  train_dataset=emotions_encoded["train"],
+                  eval_dataset=emotions_encoded["validation"],
+                  tokenizer=tokenizer)
+
+    trainer.train()
+    
+    trainer.model.save_pretrained(local_model_path)
+    tokenizer.save_pretrained(local_model_path)
+
+    # 학습된 내용은 다시 hub에 commit 한다.
+    #trainer.push_to_hub(commit_message="Training completed")
+
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, Pipeline
+
+def test_use_tuned_model_local_store(local_model_path):
+
+    tokenizer = AutoTokenizer.from_pretrained(local_model_path)
+    model = AutoModelForSequenceClassification.from_pretrained(local_model_path)
+    classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
+
+    #custom_tweet = "I saw a movie today and it was really good."
+    custom_tweet = "OpenAI will now let you create videos from verbal cues"
+    preds = classifier(custom_tweet, return_all_scores=True)
+    print(preds)
+
+    #from datasets import load_dataset
+    #emotions = load_dataset("emotion")
+    #labels = emotions["train"].features["label"].names
+    labels = ['sadness', 'joy', 'love', 'anger', 'fear', 'surprise']
+
+    preds_df = pd.DataFrame(preds[0])
+    plt.bar(labels, 100 * preds_df["score"], color='C0')
+    plt.title(f'"{custom_tweet}"')
+    plt.ylabel("Class probability (%)")
+    plt.show()
+
+
 #test_huggingface_pipeline_use()
+test_translate_kr2en()
 #test_datasets()
 #test_model_tuning()
-test_use_tuned_model()
+#test_use_tuned_model()
 
-
+local_model_path = "/home/sdn/Workspace/my_model"
+#test_model_tuning_local_store(local_model_path)
+#test_use_tuned_model_local_store(local_model_path)
