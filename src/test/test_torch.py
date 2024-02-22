@@ -507,6 +507,52 @@ def test_customdataset():
     print('pred: ', pred)
 
 
+class BinaryClassifier(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(2, 1)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        return self.sigmoid(
+            self.linear(x)
+        )
+
+
+def logistics_regression_model_class():
+    x_data = [
+        [1, 2], 
+        [2, 3], 
+        [3, 1], 
+        [4, 3], 
+        [5, 3], 
+        [6, 2]
+    ]
+    y_data = [
+        [0], 
+        [0], 
+        [0], 
+        [1], 
+        [1], 
+        [1]
+    ]
+    x_train = torch.FloatTensor(x_data)
+    y_train = torch.FloatTensor(y_data)
+
+    model = BinaryClassifier()
+    optimizer = optim.SGD(model.parameters(), lr = 1)
+
+    np_epochs = 1000
+    for epoch in range(np_epochs + 1):
+        pred = model(x_train)
+        loss = F.binary_cross_entropy(pred, y_train)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        print('loss: ', loss.item())
+
+    print(model(x_train))
 
 torch.manual_seed(1)
 
@@ -531,4 +577,5 @@ torch.manual_seed(1)
 #linear_regression_model_class()
 #linear_regression_model_multi_dim()
 #test_mini_batch()
-test_customdataset()
+#test_customdataset()
+logistics_regression_model_class()
