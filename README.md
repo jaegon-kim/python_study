@@ -286,3 +286,7 @@ https://ariz1623.tistory.com/312
 ## Copilot chat
 * https://docs.github.com/en/copilot/github-copilot-chat/about-github-copilot-chat
 * 코드의 버그 수정 가능
+
+## Gemma
+* Google open LLM model
+* https://blog.google/intl/ko-kr/products/explore-get-answers/-gemma-open-models-kr/
