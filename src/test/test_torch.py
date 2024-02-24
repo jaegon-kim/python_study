@@ -693,6 +693,13 @@ def test_layer_norm():
     print("Input Tensor:", input_tensor)
     print("Output Tensor after layer normalization:", output_tensor)
 
+    mean = output_tensor.mean(-1, keepdim=True)
+    std = output_tensor.std(-1, unbiased=False, keepdim=True)
+    print("mean of Output Tensor: ", mean)
+    print("std of Output Tensor: ", std)
+
+
+
 torch.set_printoptions(sci_mode=False, precision=5)
 
 #test_cuda_available()
