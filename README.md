@@ -34,6 +34,20 @@ https://toyourlight.tistory.com/36
 * min-max 정규화 (0~1 까지의 값으로 normalziation)
 * Z score 표준화 (deviation/standard-deviation)
 
+(Ref) https://realblack0.github.io/2020/03/29/normalization-standardization-regularization.html
+#### Normalization
+ * 값의 범위(scale)를 0~1 사이의 값으로 바꾸는 것
+ * 공통 간역으로 데이터를 늘리거나 줄인다.
+ * min-max 정규화: min-max = (data - data.min) / (data.max - data.min) --> 이상치에 대한 표현이 힘들다.
+ * 모든 데이터들의 스케일을 동일하게 만들어서 각 feature들이 동등한 중요도를 가질 수 있게 하는 것 https://kwonkai.tistory.com/144
+
+#### Standardization
+ * 값의 범위(scale)를 평균 0, 분산 1이 되도록 변환
+ * 공통 척도로 데이터를 다시 줄세운다. 
+
+#### Regularization
+ * weight를 조정하는데 규제(제약)를 거는 기법
+
 ### Loss Function
 
  MSE (Mean Square Error)

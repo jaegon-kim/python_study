@@ -3,6 +3,9 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import math, copy, time
+import matplotlib.pyplot as plt
+
 
 def test_cuda_available(): 
     print("cuda" if torch.cuda.is_available() else "cpu")
@@ -556,6 +559,142 @@ def logistics_regression_model_class():
 
 torch.manual_seed(1)
 
+def test_embedding():
+    vocab_size = 11
+    embedding_dim = 512
+    embedding_layer = nn.Embedding(vocab_size, embedding_dim)
+
+    input_indices = torch.tensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]])
+    embeddings = embedding_layer(input_indices)
+    print(input_indices.shape)
+    print(embeddings)
+    print(embeddings.shape)
+
+def test_embedding_with_positional_enconding():
+
+    class Embeddings(nn.Module):
+        def __init__(self, d_model, vocab_size): # d_model = 512, vocab_size = 11로 초기화
+            super(Embeddings, self).__init__()
+            self.lut = nn.Embedding(vocab_size, d_model)
+            self.d_model = d_model
+
+        def forward(self, x):
+            # lut(x) : Word Embedding (torch.Size([1, 10]) -> torch.Size([1, 10, 512]))
+            # 제곱근 (sqrt)를 곱하여 Position Embedding에 의해 워드 임베딩이 희석되는 것을 줄인다.
+            return self.lut(x) * math.sqrt(self.d_model)
+        
+    class PositionalEncoding(nn.Module):
+        def __init__(self, d_model, dropout, max_len=5000):
+            super(PositionalEncoding, self).__init__()
+            self.dropout = nn.Dropout(p=dropout)
+
+            pe = torch.zeros(max_len, d_model)
+            position = torch.arange(0, max_len).unsqueeze(1)
+            div_term = torch.exp(torch.arange(0, d_model, 2) *
+                                -(math.log(10000.0) / d_model))
+            pe[:, 0::2] = torch.sin(position * div_term)
+            pe[:, 1::2] = torch.cos(position * div_term)
+            pe = pe.unsqueeze(0)
+            self.register_buffer('pe', pe)
+
+        def forward(self, x):
+            pe_val = self.pe[:, :x.size(1)]
+            pe_val.requires_grad = False
+            x = x + pe_val
+            return self.dropout(x)
+
+    torch.random.manual_seed(15)
+
+    # 단어장 크기 11, 임베딩 벡터 길이 10인 임베딩 층 선언
+    V = 11
+    d_model = 10
+    emb = Embeddings(d_model, V)
+    # 길이 10인 문장의 위치를 인코딩하는 위치 인코딩 층 선언
+    pe  = PositionalEncoding(d_model, 0.1)
+    # 그림 그리기 위해 positional encoding을 복사해둠
+    pe_ = pe.pe.clone()
+
+    # 문장 길이는 5이고
+    n_seq = 5
+    # 0~10까지 숫자 5개를 무작위로 뽑아서 문장을 구성
+    # 이 예에서 문장은 실제 단어로 구성된 것은 아니고 0, 1, 2, 3, ..., 10인 
+    # 숫자를 단어로 간주함
+    x = torch.randint(0, V-1, (1, n_seq,), requires_grad=False)
+    print("integer tokens:", x.shape, "\n", x)
+
+    # Feed forward Embeddings-PositionalEncoding
+    # 숫자(단어) 다섯개로 구성된 입력을 임베딩층을 통해 (n_seq, d_model)로 변환
+    embedded = emb(x)
+    print("embedded:", embedded.shape, "\n", embedded)
+
+    # 임베딩 벡터에 대한 위치 인코딩 정보를 구해서 임베딩 벡터에 더함
+    embedded_pe = pe(embedded)
+    print("embedded_pe:", embedded_pe.shape, "\n", embedded_pe)
+
+    # 임베딩 벡터와 위치 인코딩이 더해진 입력 벡터를 그림 
+    fig, axs = plt.subplots(figsize=(18,3), nrows=1, ncols=3)
+    axs[0].imshow(embedded.detach().numpy()[0], aspect='auto', cmap='gray')
+    axs[0].set_xlabel('d_model')
+    axs[0].set_ylabel('n_seq')
+    axs[0].set_title(f"embedded vector x")
+
+    axs[1].imshow(pe_.numpy()[0][:x.shape[1]], aspect='auto', cmap='gray')
+    axs[1].set_xlabel('d_model')
+    axs[1].set_ylabel('n_seq')
+    axs[1].set_title(f"positional encoding")
+
+    axs[2].imshow(embedded_pe.detach().numpy()[0], aspect='auto', cmap='gray')
+    axs[2].set_xlabel('d_model')
+    axs[2].set_ylabel('n_seq')
+    axs[2].set_title(f"embedded vector x + positional encoding")
+
+    plt.show()
+
+def test_dropout():
+    # 드롭아웃 비율 설정 (여기서는 0.3로 설정)
+    # 3/10이 0이 될것이다.
+    dropout_rate = 0.3
+
+    # 드롭아웃 레이어 생성
+    dropout = nn.Dropout(p=dropout_rate)
+
+    # 입력 데이터 생성 (예: 크기가 3인 텐서)
+    input_tensor = torch.randn(10)
+
+    # 드롭아웃 레이어 적용
+    output_tensor = dropout(input_tensor)
+
+    # 드롭아웃이 적용된 출력 확인
+    print("Input Tensor:", input_tensor)
+    print("Output Tensor after dropout:", output_tensor)
+
+def test_layer_norm():
+
+    class LayerNorm(nn.Module):
+        def __init__(self, features, eps=1e-6):
+            super(LayerNorm, self).__init__()
+            self.a_2 = nn.Parameter(torch.ones(features))
+            self.b_2 = nn.Parameter(torch.zeros(features))
+            self.eps = eps
+
+        def forward(self, x):
+            mean = x.mean(-1, keepdim=True)
+            std = x.std(-1, unbiased=False, keepdim=True)
+            return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
+
+    layer_norm = LayerNorm(5)
+
+    #input_tensor = torch.randn(5)
+    input_tensor = torch.FloatTensor([
+                                [1, 3, 5, 7, 9]
+                        ])
+
+    output_tensor = layer_norm(input_tensor)
+    print("Input Tensor:", input_tensor)
+    print("Output Tensor after layer normalization:", output_tensor)
+
+torch.set_printoptions(sci_mode=False, precision=5)
+
 #test_cuda_available()
 #test_1d_tensor()
 #test_2d_tensor()
@@ -578,4 +717,8 @@ torch.manual_seed(1)
 #linear_regression_model_multi_dim()
 #test_mini_batch()
 #test_customdataset()
-logistics_regression_model_class()
+#logistics_regression_model_class()
+#test_embedding()
+#test_embedding_with_positional_enconding()
+#test_dropout()
+test_layer_norm()

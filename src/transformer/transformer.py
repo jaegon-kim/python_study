@@ -10,12 +10,14 @@ import math, copy, time
 import matplotlib.pyplot as plt
 
 class Embeddings(nn.Module):
-    def __init__(self, d_model, vocab):
+    def __init__(self, d_model, vocab_size): # d_model = 512, vocab_size = 11로 초기화
         super(Embeddings, self).__init__()
-        self.lut = nn.Embedding(vocab, d_model)
+        self.lut = nn.Embedding(vocab_size, d_model)
         self.d_model = d_model
 
     def forward(self, x):
+        # lut(x) : Word Embedding (torch.Size([1, 10]) -> torch.Size([1, 10, 512]))
+        # 제곱근 (sqrt)를 곱하여 Position Embedding에 의해 워드 임베딩이 희석되는 것을 줄인다.
         return self.lut(x) * math.sqrt(self.d_model)
     
 class PositionalEncoding(nn.Module):
@@ -391,7 +393,10 @@ model = make_model(V, V, N=2)
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 1200,
             torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
 
-for epoch in range(20):
+#epoches = 19;
+epoches = 1;
+
+for epoch in range(epoches + 1):
     # model goes into training mode
     model.train()
     print(f'{epoch} epoch train')
