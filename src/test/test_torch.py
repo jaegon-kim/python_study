@@ -165,6 +165,35 @@ def test_tensor_manipulate():
     x.mul_(2.)
     print(x)
 
+    x1 = torch.randint(-1, 1, (1, 10, 512), requires_grad=False)
+    print('x1:', x1.shape)
+    x2 = x1.view(1, -1, 8, 64)
+    print('x2:', x2.shape)
+    x3 = x2.transpose(1, 2)
+    print('x3:', x3.shape)
+    x4 = x3.transpose(-2, -1)
+    print('x4:', x4.shape)
+
+    x5 = torch.matmul(x3, x4) / math.sqrt(x3.size(-1))
+    print('x5:', x5.shape)
+
+    x6 = x3.transpose(1, 2)
+    print('x6:', x6.shape)
+
+    x7 = x6.contiguous()
+    print('x7:', x6.shape)
+
+
+def test_masked_fill():
+    tensor = torch.tensor([[1, 2, 3], [4, 5, 6]])
+    mask = torch.tensor([[True, False, True], [False, True, False]])
+    new_tensor = tensor.masked_fill(mask, 0)
+    print(new_tensor)
+
+    mask = torch.tensor([[True, False, True]])
+    new_tensor = tensor.masked_fill(mask, 0)
+    print(new_tensor)
+
 
 def test_squeeze():
     x = torch.tensor([1, 2, 3])
@@ -698,9 +727,86 @@ def test_layer_norm():
     print("mean of Output Tensor: ", mean)
     print("std of Output Tensor: ", std)
 
+def test_attention():
+
+    def clones(module, N):
+        return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
+
+    class MultiHeadAttention(nn.Module):
+        def __init__(self, h, d_model, dropout=0.1):
+            super(MultiHeadAttention, self).__init__()
+            assert d_model % h == 0
+            self.d_k = d_model // h
+            self.h = h
+            self.linears = clones(nn.Linear(d_model, d_model), 4)
+            self.attn = None
+            self.dropout = nn.Dropout(p=dropout)
+
+        def forward(self, query, key, value, mask=None):
+            if mask is not None:
+                mask = mask.unsqueeze(1)
+            nbatches = query.size(0)
+
+            # for l, x in zip(self.linears, (query, key, value)):
+            #     print('\nl: ', l, ', x: \n', x)
+            #     v = l(x).view(nbatches, -1, self.h, self.d_k)
+            #     print('v.transpose(1, 2):\n', v.transpose(1, 2))
+
+            l = self.linears[0]
+            x = query
+            print('\nl: ', l, ', x: \n', x)
+            v = l(x).view(nbatches, -1, self.h, self.d_k)
+            print('v.transpose(1, 2):\n', v.transpose(1, 2))
+            query = x
+
+            # 1)
+            #print('query: ', query.shape)
+            #query, key, value = \
+            #    [l(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2)
+            #        for l, x in zip(self.linears, (query, key, value))]
+            #print('query: ', query.shape)
+
+            #print('query: ', query)
+            #print('key: ', key)
+            #print('value: ', value)
 
 
-torch.set_printoptions(sci_mode=False, precision=5)
+            # 2)
+            #x, self.attn = attention(query, key, value, mask=mask, dropout=self.dropout)
+            # 3)
+            #x = x.transpose(1, 2).contiguous().view(nbatches, -1, self.h * self.d_k)
+            # 4)
+            #return self.linears[-1](x)
+
+    x = torch.tensor([[
+        [-1.3702,  1.0295,  0.4944, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2364, -1.4332,  3.1860],
+        [-1.1482,  1.2761,  2.5505, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  2.3037,  1.0941, -0.1095],
+        [ 0.7402,  0.9188,  0.5695, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0.9548,  2.2250,  3.1030],
+         
+        [-0.4645, -1.0368,  0.3478, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.8372,  0.7474,  2.4098],
+        [ 0.4066,  0.9719,  1.2753, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.6630,  1.2791, -0.8821],
+        [ 1.3251,  1.5064,  2.4238, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.1342,  2.0200,  2.0517]
+        ]])
+
+    print('x: \n', x)
+
+    mask = torch.tensor([[
+        [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]
+    ]])
+
+    m_head_attention = MultiHeadAttention(8, 16)
+    m_head_attention(x, x, x, mask)
+
+def test_softmax():
+    x = torch.tensor([
+        [8., 4., 8.],
+        [4., 2., 4.],
+        [5., 2., 6.]
+    ])
+    p = F.softmax(x, dim=-1)
+    print(p)
+
+torch.set_printoptions(sci_mode=False, precision=1)
 
 #test_cuda_available()
 #test_1d_tensor()
@@ -711,6 +817,7 @@ torch.set_printoptions(sci_mode=False, precision=5)
 #test_sum()
 #test_max()
 #test_tensor_manipulate()
+#test_masked_fill()
 #test_squeeze()
 #test_type_casting()
 #test_long_tensor()
@@ -728,4 +835,6 @@ torch.set_printoptions(sci_mode=False, precision=5)
 #test_embedding()
 #test_embedding_with_positional_enconding()
 #test_dropout()
-test_layer_norm()
+#test_layer_norm()
+#test_attention()
+test_softmax()

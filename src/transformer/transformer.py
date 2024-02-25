@@ -60,6 +60,11 @@ class MultiHeadAttention(nn.Module):
         assert d_model % h == 0
         self.d_k = d_model // h
         self.h = h
+        # 4개의 Linear 계층이 Clone 된다.
+        # Linear 0: query 용
+        # Linear 1: key 용
+        # Linear 2: value 용
+        # Linear 3: attention 용 
         self.linears = clones(nn.Linear(d_model, d_model), 4)
         self.attn = None
         self.dropout = nn.Dropout(p=dropout)
@@ -68,7 +73,20 @@ class MultiHeadAttention(nn.Module):
         if mask is not None:
             mask = mask.unsqueeze(1)
         nbatches = query.size(0)
+
         # 1)
+        # [greedy_decode case]
+        # 
+        #  l = self.linears[0]  // nn.Linear(512, 512) 
+        #  x = query            // shape: [1, 10, 512]
+        #  x = nn.Linear(x)   // 선형층 통과 (W_q 값은 어디서 왔을까 ? Training에서 학습 한 값 인가 ?)
+        #  x = out.view(nbatches = 1, -1 = 10, self.h = 8, self.d_k = 64) // shape: [1, 10, 8, 64]
+        #  x = out.transpose(1, 2) // // shape: [1, 10, 8, 64]
+        #  query = x
+        #  
+        #  위 과정을 (l = self.linears[1], x = key), (l = self.linears[2], x = key)에 대해 반복하여
+        #  query, key, value를 만든다.
+
         query, key, value = \
             [l(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2)
                 for l, x in zip(self.linears, (query, key, value))]
@@ -99,6 +117,7 @@ class SublayerConnection(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, sublayer):
+        # 주의 !! 그냥 ,dropout 이 아닌 원래 word vector와 Add 함
         return self.norm(x + self.dropout(sublayer(x)))
 
 
@@ -268,7 +287,7 @@ def data_gen2(V, batch, nbatches):
         #tgt[:, 5] -= 1
 
         yield Batch(src, tgt, 0)
-
+'''
 for data in data_gen2(11, 1, 10):
     print('data.src: ', data.src)
     #print('data.src_mask: ', data.src_mask)
@@ -276,7 +295,8 @@ for data in data_gen2(11, 1, 10):
     print('data.trg_y: ', data.trg_y)
     #print('data.trg_mask\n', data.trg_mask)
     print()
-
+'''
+    
 global max_src_in_batch, max_tgt_in_batch
 def batch_size_fn(new, count, sofar):
     global max_src_in_batch, max_tgt_in_batch
@@ -387,68 +407,84 @@ def run_epoch(data_iter, model, loss_compute):
 
     return total_loss / total_tokens
 
-V = 11
-criterion = LabelSmoothing(size=V, padding_idx=0, smoothing=0.0)
-model = make_model(V, V, N=2)
-model_opt = NoamOpt(model.src_embed[0].d_model, 1, 1200,
-            torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
+def training_transformer():
 
-#epoches = 19;
-epoches = 1;
+    V = 11
+    criterion = LabelSmoothing(size=V, padding_idx=0, smoothing=0.0)
+    model = make_model(V, V, N=2)
+    #model = make_model(V, V, N=6) # 6번이 더 안 좋은 듯 .. 왜 ?
 
-for epoch in range(epoches + 1):
-    # model goes into training mode
-    model.train()
-    print(f'{epoch} epoch train')
-    run_epoch(data_gen2(V, 30, 20), model,
-              SimpleLossCompute(model.generator, criterion, model_opt))
-    print('eval')
-    # model goes out from training mode, and goes into evaluation mode
-    model.eval()
-    eval_loss = run_epoch(data_gen2(V, 30, 5), model,
-            SimpleLossCompute(model.generator, criterion, None))
-    print('eval_loss:', eval_loss, '\n')
+    model_opt = NoamOpt(model.src_embed[0].d_model, 1, 1200,
+                torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
+
+    epoches = 19;
+    #epoches = 1;
+
+    for epoch in range(epoches + 1):
+        # model goes into training mode
+        model.train()
+        print(f'{epoch} epoch train')
+        run_epoch(data_gen2(V, 30, 20), model,
+                SimpleLossCompute(model.generator, criterion, model_opt))
+        print('eval')
+        # model goes out from training mode, and goes into evaluation mode
+        model.eval()
+        eval_loss = run_epoch(data_gen2(V, 30, 5), model,
+                SimpleLossCompute(model.generator, criterion, None))
+        print('eval_loss:', eval_loss, '\n')
+
+    return model
+
 
 def greedy_decode(model, src, src_mask, max_len, start_symbol):
     memory = model.encode(src, src_mask)
     ys = torch.ones(1, 1).fill_(start_symbol).type_as(src.data)
-    print('ys: ', ys)
+    #print('ys: ', ys)
 
     for i in range(max_len-1):
-        print('ys.shape: ', ys.shape)
+        #print('ys.shape: ', ys.shape)
         out = model.decode(
             memory, src_mask, ys,
             subsequent_mask(ys.size(1)).type_as(src.data)
             )
-        print('out.shape: ', out.shape)
-        print('out[:, -1].shape: ', out[:, -1].shape)
+        #print('out.shape: ', out.shape)
+        #print('out[:, -1].shape: ', out[:, -1].shape)
 
         prob = model.generator(out[:, -1])
-        print('prob: ', prob)
-        print('prob.shape:', prob.shape)
+        #print('prob: ', prob)
+        #print('prob.shape:', prob.shape)
 
         _, next_word = torch.max(prob, dim = 1)
-        print('next_word: ', next_word, ', next_word.data[0]: ', next_word.data[0])
+        #print('next_word: ', next_word, ', next_word.data[0]: ', next_word.data[0])
         next_word = next_word.data[0]
 
         ys = torch.cat([ys,
                         torch.ones(1, 1).type_as(src.data).fill_(next_word)], dim=1)
-        print('ys: ', ys)
-        print('\n')
+        #print('ys: ', ys)
+        #print('\n')
     return ys
 
+def eval_transformer(model):
 
-model.eval()
+    model.eval()
 
-# To use GPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#src = torch.LongTensor([[1, 1, 1, 1, 1,    1, 1, 1, 1, 1]]).to(device)
-src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]]).to(device)
-                       # 1, 3, 4, 5, 6,    9, 8, 3, 10, 8
-src_mask = torch.ones(1, 1, 10).to(device)
-#src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]])
-#src_mask = torch.ones(1, 1, 10)
+    # To use GPU
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #src = torch.LongTensor([[6, 7, 8, 9, 5,     1, 2, 3, 4, 5]]).to(device)
+    #src = torch.LongTensor([[1, 2, 3, 4, 5,    6, 7, 8, 9, 5]]).to(device)
+    src = torch.LongTensor([[1, 3, 4, 5, 6,    8, 7, 2, 9, 7]]).to(device)
+                           # 1, 3, 4, 5, 6,    9, 8, 3, 10, 8
+    src_mask = torch.ones(1, 1, 10).to(device)
+ 
+    print('input : ', src)
+    print('output: ', greedy_decode(model, src, src_mask, max_len=10, start_symbol=1))
 
-print(greedy_decode(model, src, src_mask, max_len=10, start_symbol=1))
 
+mode_path = 'my_transformer.model'
+
+#model = training_transformer()
+#torch.save(model, mode_path)
+
+model = torch.load(mode_path)
+eval_transformer(model)
 

@@ -36,6 +36,13 @@ def test_zip():
     print('x: ', x)
     print('y: ', y)
 
+    ll = ('a', 'b', 'c', 'd')
+    xl = ('1', '2', '3')
+
+    for l, x in zip(ll, xl):
+        print('l: ', l, ', x: ', x)
+
+
 import nltk
 from nltk.tokenize import word_tokenize
 
@@ -99,10 +106,10 @@ def test_class():
     print(cal2.add(7))
 
 
-test_reversed()
-test_tokenizing()
-test_deep_copy()
+#test_reversed()
+#test_tokenizing()
+#test_deep_copy()
 test_zip()
-test_data_preprocessing()
-test_global()
-test_class()
+#test_data_preprocessing()
+#test_global()
+#test_class()
