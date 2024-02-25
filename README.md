@@ -247,6 +247,12 @@ next : https://wikidocs.net/57805
  https://metamath1.github.io/2021/11/11/transformer.html
  https://colab.research.google.com/github/metamath1/ml-simple-works/blob/master/transformer/annotated_transformer.ipynb
 
+ Transformer 강의 1 - Attention 설명 (이민석 교수 강의)
+ https://www.youtube.com/watch?v=kyIw0nHoG9w&t=145s
+
+ [딥러닝] Lecture 9. Attention Mechanism & Transformers (이준석 교수 강의)
+ https://www.youtube.com/watch?v=iiXRuCZ0ww8
+
 ## Goal 2 - Natural Language Processing with Deep Learning
 https://wikidocs.net/book/2155
 
