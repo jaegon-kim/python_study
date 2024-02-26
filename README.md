@@ -249,6 +249,29 @@ Sample과 특성
 
 next : https://wikidocs.net/57805
 
+## Workd Embedding 
+
+ * Vector를 이용해 표현단 단어는 1) cosinge 유사도, 2) 유클리디안 유사도 등을 이용해 구할 수 있음
+ * https://www.youtube.com/watch?v=p80ME0MXHz4 (국민대 강승식 교수 강의)
+
+### TF-IDF 
+ * Term Frequency - 단어의 빈도를 이용
+ * 표현력이 매우 낮다
+
+### Word2Vec
+ * 단어들의 Vector 사전을 구축하기 위해 일일이 단어에 레이블링을 달아 줄 수 었음. 쉽고 자동적으로 구축하기 위한 알고리즘이 필요함
+ * CBOW(Continuous Bag of Words) : 주변 단어를 활용해 중간 단어를 레이블링하는 방법 
+ * Skip-Gram : 중간 단어를 활용해 주변 단어를 레이블링하는 방법
+ * 요즘은 Word2Vec도 잘 쓰지 않는다.
+
+### BERT
+ * Transformer Encoder를 이용한 대용량 Pretrained Word Embedding
+ * Self Supervised(사람의 도움이 필요 없음)
+ * Input: 두개의 문장(연속된 문장 또는 연관되지 않은 문장) + Token Embedding, Segment Embedding, Position Embedding
+ * MLM (Masked Language Model) - 빈간 채우기 학습 (굉장히 큰 역할)
+ * NSP (Next Sentence Predection) - 두 문장이 연결된 문장인지 맞추기 학습
+ * MLM과 NSP로 학습하면 굉장히 정확도가 높은 Word Embedding이 나옴 (공개되어 있음) 
+
 ## Transformer 
  https://metamath1.github.io/2021/11/11/transformer.html
  https://colab.research.google.com/github/metamath1/ml-simple-works/blob/master/transformer/annotated_transformer.ipynb
@@ -267,6 +290,17 @@ next : https://wikidocs.net/57805
 (이민석 교수 강의)
  Transformer 강의 1 - Attention 설명 
  https://www.youtube.com/watch?v=kyIw0nHoG9w&t=145s
+
+
+### Transformer에서 backpropagation으로 학습되는 파라미터
+ * Attention Weight Matrices : Wq, Wk, Wv 등의 가중치 행렬 
+ * Feed Forward Neuronal Network Parameter
+ * Layer Normnalization Parameters
+ * Position Encoding Parameters
+ * Output Layer Parameter
+
+### Word Embedding은 Transformer의 backpropagation으로 학습되지 않는다. 
+ * Transformer를 사용하기 전에 사전 학습해 놓는다.(Word2Vec, GloVe, FastText 알고리즘 등)
 
 
 ## Goal 2 - Natural Language Processing with Deep Learning

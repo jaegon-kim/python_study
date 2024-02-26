@@ -315,13 +315,66 @@ def test_use_tuned_model_local_store(local_model_path):
     plt.ylabel("Class probability (%)")
     plt.show()
 
+from transformers import BertModel, BertTokenizer
+
+def test_bert_wordembedding():
+
+    # BERT 모델과 토크나이저 불러오기
+    model_name = 'bert-base-uncased'  # 또는 원하는 다른 BERT 모델 이름
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    model = BertModel.from_pretrained(model_name)
+
+    text = "Example text to extract word embeddings."
+
+    tokens = tokenizer(text, return_tensors='pt', padding=True, truncation=True)
+
+    with torch.no_grad():
+        outputs = model(**tokens)
+
+    word_embeddings = outputs.last_hidden_state
+    print(word_embeddings)
+
+
+def test_bert_multilang_wordembedding():
+
+    model_name = 'bert-base-multilingual-cased'
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    model = BertModel.from_pretrained(model_name)
+
+    text = "[CLS] " + "한국어 워드 임베딩 지원" + " [SEP]"
+
+    tokens = tokenizer(text, return_tensors='pt', padding=True, truncation=True)
+
+    with torch.no_grad():
+        outputs = model(**tokens)
+
+    word_embeddings = outputs.last_hidden_state
+
+    print(tokenizer.tokenize(text))
+    print(word_embeddings.shape)
+    print(word_embeddings)
+
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+# https://huggingface.co/google/gemma-2b
+# https://luvris2.tistory.com/865#article-3-1--hugging-face-cli-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%84%A4%EC%B9%98-%EB%B0%8F-%EB%A1%9C%EA%B7%B8%EC%9D%B8
+def test_gemma_2b():
+    tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b")
+    model = AutoModelForCausalLM.from_pretrained("google/gemma-2b")
+    input_text = "Write me a poem about Machine Learning."
+    input_ids = tokenizer(input_text, return_tensors="pt")
+    outputs = model.generate(**input_ids)
+    print(tokenizer.decode(outputs[0]))
+
 
 #test_huggingface_pipeline_use()
-test_translate_kr2en()
+#test_translate_kr2en()
 #test_datasets()
 #test_model_tuning()
 #test_use_tuned_model()
-
+#test_bert_wordembedding()
+#test_bert_multilang_wordembedding()
+test_gemma_2b()
 local_model_path = "/home/sdn/Workspace/my_model"
 #test_model_tuning_local_store(local_model_path)
 #test_use_tuned_model_local_store(local_model_path)
