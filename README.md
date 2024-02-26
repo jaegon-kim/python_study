@@ -265,12 +265,21 @@ next : https://wikidocs.net/57805
  * 요즘은 Word2Vec도 잘 쓰지 않는다.
 
 ### BERT
+ * Bert는 Pretraining과 fine tuning으로 구서오딤
+ * Bert의 Pretraining 결과
+    1. 워드 임베딩
+    2. 문장 임베딩
+    3. 언어 모델링
+    4. 문장 간 관계 이해
+
  * Transformer Encoder를 이용한 대용량 Pretrained Word Embedding
  * Self Supervised(사람의 도움이 필요 없음)
  * Input: 두개의 문장(연속된 문장 또는 연관되지 않은 문장) + Token Embedding, Segment Embedding, Position Embedding
  * MLM (Masked Language Model) - 빈간 채우기 학습 (굉장히 큰 역할)
  * NSP (Next Sentence Predection) - 두 문장이 연결된 문장인지 맞추기 학습
  * MLM과 NSP로 학습하면 굉장히 정확도가 높은 Word Embedding이 나옴 (공개되어 있음) 
+
+
 
 ## Transformer 
  https://metamath1.github.io/2021/11/11/transformer.html
