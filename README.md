@@ -219,6 +219,12 @@ https://toyourlight.tistory.com/66 (RNN)
 
 https://toyourlight.tistory.com/71 (RNN - Many to One)
  * ch66_RNN_many2one.py - 컴파일 에러 발생 (수정 필요함) 
+ * RNN - 입력과 아웃풋의 길이가 다를 경우 그대로 쓸 수 없다. 
+       - Exploding/Vanishing Gradient Problem이 있다. 
+       - 해결하기 위해 LSTM/GRU가 나왔지만 그래도 긴 것은 해결하지 못한다.
+       - 입력 문장의 길이와 상관 없이 받아들일 수 있지만, Encoder의 Hidden State가 고정되므로  
+         입력 문장의 길이가 아주 길어질 경우 앞쪽의 단어들이 사라지기 시작한다. (Single Embedding의 한계)
+
 
 https://toyourlight.tistory.com/73 (RNN - Many to Many)
  * ch66_RNN_many2many.py 
@@ -247,11 +253,21 @@ next : https://wikidocs.net/57805
  https://metamath1.github.io/2021/11/11/transformer.html
  https://colab.research.google.com/github/metamath1/ml-simple-works/blob/master/transformer/annotated_transformer.ipynb
 
- Transformer 강의 1 - Attention 설명 (이민석 교수 강의)
+(이준석 교수 강의)
+ [딥러닝] Lecture 9. Attention Mechanism & Transformers (2022년도 강의)
+ https://www.youtube.com/watch?v=iiXRuCZ0ww8
+
+ [딥러닝] Lecture 9. Attention Mechanism & Transformers I (2023년도 강의)
+ https://www.youtube.com/watch?v=DVCbOfd09w8
+
+ [딥러닝] Lecture 10. Transformers II (2023년도 강의)
+ https://www.youtube.com/watch?v=H6hFYlmmWGs
+
+
+(이민석 교수 강의)
+ Transformer 강의 1 - Attention 설명 
  https://www.youtube.com/watch?v=kyIw0nHoG9w&t=145s
 
- [딥러닝] Lecture 9. Attention Mechanism & Transformers (이준석 교수 강의)
- https://www.youtube.com/watch?v=iiXRuCZ0ww8
 
 ## Goal 2 - Natural Language Processing with Deep Learning
 https://wikidocs.net/book/2155
