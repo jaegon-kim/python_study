@@ -282,10 +282,15 @@ next : https://wikidocs.net/57805
 
 
 ## Transformer 
+
+### The Annotated Transformer
+ https://nlp.seas.harvard.edu/2018/04/03/attention.html
+
+### Really annotated transformers
  https://metamath1.github.io/2021/11/11/transformer.html
  https://colab.research.google.com/github/metamath1/ml-simple-works/blob/master/transformer/annotated_transformer.ipynb
 
-(이준석 교수 강의)
+### 이준석 교수 강의
  [딥러닝] Lecture 9. Attention Mechanism & Transformers (2022년도 강의)
  https://www.youtube.com/watch?v=iiXRuCZ0ww8
 
@@ -295,8 +300,7 @@ next : https://wikidocs.net/57805
  [딥러닝] Lecture 10. Transformers II (2023년도 강의)
  https://www.youtube.com/watch?v=H6hFYlmmWGs
 
-
-(이민석 교수 강의)
+### 이민석 교수 강의
  Transformer 강의 1 - Attention 설명 
  https://www.youtube.com/watch?v=kyIw0nHoG9w&t=145s
 

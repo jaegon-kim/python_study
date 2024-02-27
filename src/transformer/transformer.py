@@ -260,8 +260,16 @@ class Batch:
         self.src = src
         self.src_mask = (src != pad).unsqueeze(-2)
         if trg is not None:
+            # src: 1 5 3 7 1 4 4 6 8 3 (len: 10)
+            # trg: 1 5 3 7 1 5 5 7 8 4 (len: 10)
+            #    trg: 1 5 3 7 1 5 5 7 8 (len: 9) - 디코더에 입력되는 Target
+            #  trg_y: 5 3 7 1 5 5 7 8 4 (len: 9) - 디코더에서 출력되는 Target
+
+            # 디코더에 입력되는 Target
             self.trg = trg[:, :-1]
+            # 디코더에서 출력되는 Target
             self.trg_y = trg[:, 1:]
+
             self.trg_mask = self.make_std_mask(self.trg, pad)
             self.ntokens = (self.trg_y != pad).data.sum()
 
@@ -424,6 +432,8 @@ def training_transformer():
         # model goes into training mode
         model.train()
         print(f'{epoch} epoch train')
+
+        # 'data_gen2(V, 30, 20)' will give random (30, 10) data 20 times
         run_epoch(data_gen2(V, 30, 20), model,
                 SimpleLossCompute(model.generator, criterion, model_opt))
         print('eval')
@@ -480,11 +490,11 @@ def eval_transformer(model):
     print('output: ', greedy_decode(model, src, src_mask, max_len=10, start_symbol=1))
 
 
-mode_path = 'my_transformer.model'
+mode_path = 'my_transformer_1.model'
 
-#model = training_transformer()
-#torch.save(model, mode_path)
+model = training_transformer()
+torch.save(model, mode_path)
 
-model = torch.load(mode_path)
-eval_transformer(model)
+#model = torch.load(mode_path)
+#eval_transformer(model)
 

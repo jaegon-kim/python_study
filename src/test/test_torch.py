@@ -256,7 +256,7 @@ def test_data_gen2(V = 11, batch = 30, nbatches = 20):
     for i in range(nbatches):
         print('batch ', i)
         r_np = np.random.randint(1, V-1, size=(batch, 10))
-        #print(' ', r_np, r_np.shape)
+        print(' ', r_np.shape)
         data = torch.from_numpy(r_np)
         #print(' ', data, data.shape)
         data[:, 0] = 1
@@ -266,7 +266,7 @@ def test_data_gen2(V = 11, batch = 30, nbatches = 20):
         tgt[:, V//2:] += 1
         #print('  src         : ', src, src.shape)
         #print('  tgt         : ', tgt, tgt.shape)
-        yield Batch(src, tgt, 0)
+        #yield Batch(src, tgt, 0)
         
 def test_yield():
     for i, data in enumerate(test_data_gen2()):
@@ -822,7 +822,7 @@ torch.set_printoptions(sci_mode=False, precision=1)
 #test_type_casting()
 #test_long_tensor()
 #test_ones()
-#test_data_gen2()
+test_data_gen2()
 #test_yield()
 #test_autograd()
 #linear_regression()
@@ -837,4 +837,4 @@ torch.set_printoptions(sci_mode=False, precision=1)
 #test_dropout()
 #test_layer_norm()
 #test_attention()
-test_softmax()
+#test_softmax()
