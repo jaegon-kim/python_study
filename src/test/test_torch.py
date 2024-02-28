@@ -808,6 +808,15 @@ def test_softmax():
 
 torch.set_printoptions(sci_mode=False, precision=1)
 
+def test_onehot_encoding():
+    #input_ids = [0, 1, 2, 3, 4, 5]
+    input_ids = list(range(6))
+    input_ids = torch.tensor(input_ids)
+    one_hot_encodings = F.one_hot(input_ids, num_classes=len(input_ids))
+    one_hot_encodings = one_hot_encodings.unsqueeze(-2)
+    print(one_hot_encodings)
+    print('[0]: ', one_hot_encodings[0])
+
 #test_cuda_available()
 #test_1d_tensor()
 #test_2d_tensor()
@@ -822,7 +831,8 @@ torch.set_printoptions(sci_mode=False, precision=1)
 #test_type_casting()
 #test_long_tensor()
 #test_ones()
-test_data_gen2()
+
+#test_data_gen2()
 #test_yield()
 #test_autograd()
 #linear_regression()
@@ -838,3 +848,4 @@ test_data_gen2()
 #test_layer_norm()
 #test_attention()
 #test_softmax()
+test_onehot_encoding()
