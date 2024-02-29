@@ -9,16 +9,6 @@ from transformers import AutoTokenizer
 from bertviz.transformers_neuron_view import BertModel
 from datasets import load_dataset
 
-model_ckpt = "bert-base-uncased" # model check point
-tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
-model = BertModel.from_pretrained(model_ckpt)
-text = "time flies like an arrow"
-
-inputs = tokenizer(text, return_tensors="pt", add_special_tokens=False)
-print(inputs)
-
-config = AutoConfig.from_pretrained(model_ckpt)
-#print('config: ', config)
 
 def scaled_dot_product_attention(query, key, value, mask=None):
     dim_k = query.size(-1)
@@ -28,13 +18,20 @@ def scaled_dot_product_attention(query, key, value, mask=None):
     weights = F.softmax(scores, dim=-1)
     return torch.bmm(weights, value)
 
-def test_scaled_dot_product_attention(config):
+
+def test_scaled_dot_product_attention(train_data_path):
     print('* test_scaled_dot_product_attention')
+
+    text_ids = torch.load(train_data_path + ".text_ids")[1]
+    #text_ids = torch.stack(text_ids)
+    print(text_ids)
+
+    config = torch.load(train_data_path + ".config")
 
     token_emb = nn.Embedding(config.vocab_size, config.hidden_size)
     print(token_emb)
 
-    inputs_embeds = token_emb(inputs.input_ids)
+    inputs_embeds = token_emb(text_ids)
     print(inputs_embeds.size())
 
     query = key = value = inputs_embeds
@@ -42,7 +39,9 @@ def test_scaled_dot_product_attention(config):
     scores = torch.bmm(query, key.transpose(1, 2)) / sqrt(dim_k)
     print('q(', query.size(), ') x k(', key.transpose(1, 2).size(), ') = ', scores.size() )
 
-    print(scaled_dot_product_attention(query, key, value))
+    r = scaled_dot_product_attention(query, key, value)
+    print(r)
+    print(r.shape)
 
 
 class AttentionHead(nn.Module):
@@ -57,6 +56,7 @@ class AttentionHead(nn.Module):
         attn_outputs = scaled_dot_product_attention(
             self.q(hidden_state), self.k(hidden_state), self.v(hidden_state))
         return attn_outputs
+
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, config):
@@ -137,8 +137,6 @@ class TransformerDecoderLayer(nn.Module):
         x = x + self.feed_forward(self.layer_norm_2(x))
         return x
 
-
-
 class Embeddings(nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -195,74 +193,93 @@ class TransformerForSequenceClassification(nn.Module):
         #print('clasifier output: ', x.shape)
         return x
 
-def test_transformer_for_sequence_classification():
-    print('* test_transformer_for_sequence_classification')
-    config.num_labels = 6
-    encoder_classifier = TransformerForSequenceClassification(config)
+def store_emotion_train_data(train_data_path):
+    print('* store_emotion_word_embedding')
 
-    text = "hello world"
-    inputs = tokenizer(text, return_tensors="pt", add_special_tokens=False)
-    print(inputs)
-    rslt = encoder_classifier(inputs.input_ids)
-    print(rslt)
-
-def test_emotion_classification():
-    print("* test_emotion_classification")
-
-    config.num_labels = 6
-    encoder_classifier = TransformerForSequenceClassification(config)
+    model_ckpt = "bert-base-uncased" # model check point
+    tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
+    config = AutoConfig.from_pretrained(model_ckpt)
 
     emotions = load_dataset("emotion", trust_remote_code=True)
     train_ds = emotions["train"]
+    texts = train_ds["text"]
+    labels = train_ds["label"]
 
-    train_set_len = 5
-    texts = train_ds["text"][:train_set_len]
-    labels = train_ds["label"][:train_set_len]
+    def text2id(t):
+        return tokenizer(t, return_tensors="pt", add_special_tokens=False).input_ids
 
-    def label_int2str(row):
+    text_ids = [text2id(t) for t in texts]    
+  
+    torch.save(text_ids, train_data_path + ".text_ids")
+    torch.save(labels, train_data_path + ".labels")
+    torch.save(config, train_data_path + ".config")
+
+    print("Completed to store emotion data ", train_data_path, ", size: ", len(text_ids))
+
+def validate_train_data(train_data_path):
+
+    model_ckpt = "bert-base-uncased" # model check point
+    tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
+    emotions = load_dataset("emotion", trust_remote_code=True)
+    train_ds = emotions["train"]
+
+    load_len = 10
+    text_ids = torch.load(train_data_path + ".text_ids")[:load_len]
+    labels = torch.load(train_data_path + ".labels")[:load_len]
+    config = torch.load(train_data_path + ".config")
+
+    def label_id2str(row):
         return train_ds.features["label"].int2str(row)
+    
+    def text_id2str(ids):
+        return tokenizer.convert_ids_to_tokens(ids)
 
-    '''
-    for text, label in zip(texts, labels):
-        print('\n[', label_int2str(label), '] ', text, )
-        inputs = tokenizer(text, return_tensors="pt", add_special_tokens=False)
-        print('inputs:\n', inputs.input_ids)
-        rslt = encoder_classifier(inputs.input_ids)
-        print('rslt:\n', rslt)
-        print('rslt.sum:\n', torch.sum(rslt))
-    '''
+    for tid, label in zip(text_ids, labels):
+        print("text-id: ", text_id2str(tid[0]), ", label: ", label_id2str(label))
+
+
+
+def train_emotion_classification(train_data_path):
+    print("* test_emotion_classification")
+    
+    text_ids = torch.load(train_data_path + ".text_ids")
+    labels = torch.load(train_data_path + ".labels")
+    config = torch.load(train_data_path + ".config")
+
+    print("Completed to load emotion data ", train_data_path, ", size: ", len(text_ids))
+
+    config.num_labels = 6
+    encoder_classifier = TransformerForSequenceClassification(config)
+ 
     labels_onehot = list(range(config.num_labels))
     labels_onehot = torch.tensor(labels_onehot)
     labels_onehot = F.one_hot(labels_onehot, num_classes=len(labels_onehot))
     labels_onehot = labels_onehot.unsqueeze(-2).to(torch.float)
 
-    print('labels_onehot: ', labels_onehot)
-    print('[0]: ', labels_onehot[0])
-
-    #'''
-    optimizer = optim.SGD(encoder_classifier.parameters(), lr = 0.00000001)
-    #optimizer = optim.Adam(encoder_classifier.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9)
+    #optimizer = optim.SGD(encoder_classifier.parameters(), lr = 0.00000001)
+    optimizer = optim.Adam(encoder_classifier.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9)
 
     cnt = 0
-    np_epochs = 1000
+    np_epochs = 1
     for epoch in range(np_epochs + 1):
-        for text, label in zip(texts, labels):
-            inputs = tokenizer(text, return_tensors="pt", add_special_tokens=False)
-            pred = encoder_classifier(inputs.input_ids)
-            #print('pred: ', pred.shape, ', ', pred)
+        for text_id, label in zip(text_ids, labels):
+            pred = encoder_classifier(text_id)            
             target = labels_onehot[label]
-            #print('target: ', target.shape, ', ', target)
             loss = F.cross_entropy(pred, target)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
         
             cnt += 1
-            if cnt % 100:
-                print('loss: ', loss.shape,' ', loss)
-    #'''
-#test_scaled_dot_product_attention(config)
+            #if cnt % 100 == 0:
+            print('[', cnt, ']  loss: ', loss.shape,' ', loss)
+
+    torch.save(encoder_classifier, "encoder_classifier_1.model")         
+
+train_data_path = 'hf_emotion_classifier'
+#store_emotion_train_data(train_data_path)
+#test_scaled_dot_product_attention(train_data_path)
 #test_multi_head_attention()
-#test_transformer_for_sequence_classification()
-test_emotion_classification()
+#validate_train_data(train_data_path)
+train_emotion_classification(train_data_path)
 
