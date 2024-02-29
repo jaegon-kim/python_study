@@ -27,3 +27,7 @@ distilbert-base-uncased-finetuned-emotion/checkpoint-500/tokenizer.json
 distilbert-base-uncased-finetuned-emotion/checkpoint-500/trainer_state.json
 distilbert-base-uncased-finetuned-emotion/checkpoint-500/training_args.bin
 distilbert-base-uncased-finetuned-emotion/checkpoint-500/vocab.txt
+encoder_classifier_1.model
+hf_emotion_classifier.config
+hf_emotion_classifier.labels
+hf_emotion_classifier.text_ids

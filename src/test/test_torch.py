@@ -197,19 +197,24 @@ def test_masked_fill():
 
 def test_squeeze():
     x = torch.tensor([1, 2, 3])
-    print(x)
+    print(x, x.shape)
 
     # 첫 번째 차원에 새로운 차원 추가
     x_new = x.unsqueeze(0)
-    print('x.unsqueeze(0): ', x_new)
+    print('x.unsqueeze(0): ', x_new, x_new.shape)
+
+    x_old = x.squeeze()
+    print('x.squeeze(): ', x_old, x_old.shape)
+
+
     # 출력: tensor([[1, 2, 3]])
 
     # 두 번째 차원에 새로운 차원 추가
     x_new = x.unsqueeze(1)
-    print('x.unsqueeze(1): ', x_new)
+    print('x.unsqueeze(1): ', x_new, x_new.shape)
 
     x_new = x.unsqueeze(-2)
-    print('x.unsqueeze(-2): ', x_new)
+    print('x.unsqueeze(-2): ', x_new, x_new.shape)
 
 
 def test_type_casting():
@@ -827,7 +832,7 @@ def test_onehot_encoding():
 #test_max()
 #test_tensor_manipulate()
 #test_masked_fill()
-#test_squeeze()
+test_squeeze()
 #test_type_casting()
 #test_long_tensor()
 #test_ones()
@@ -848,4 +853,4 @@ def test_onehot_encoding():
 #test_layer_norm()
 #test_attention()
 #test_softmax()
-test_onehot_encoding()
+#test_onehot_encoding()

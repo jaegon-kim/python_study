@@ -3,6 +3,8 @@ from math import sqrt
 import torch.nn.functional as F
 from torch import nn
 import torch.optim as optim
+from torch.utils.data import TensorDataset
+from torch.utils.data import DataLoader
 
 from transformers import AutoConfig
 from transformers import AutoTokenizer
@@ -22,10 +24,7 @@ def scaled_dot_product_attention(query, key, value, mask=None):
 def test_scaled_dot_product_attention(train_data_path):
     print('* test_scaled_dot_product_attention')
 
-    text_ids = torch.load(train_data_path + ".text_ids")[1]
-    #text_ids = torch.stack(text_ids)
-    print(text_ids)
-
+    text_ids = torch.load(train_data_path + ".text_ids")
     config = torch.load(train_data_path + ".config")
 
     token_emb = nn.Embedding(config.vocab_size, config.hidden_size)
@@ -93,10 +92,14 @@ class FeedForward(nn.Module):
 def test_multi_head_attention():
     print('* test_multi_head_attention')
 
+    text_ids = torch.load(train_data_path + ".text_ids")[:100]
+    print('text_ids.shape: ', text_ids.shape)
+    config = torch.load(train_data_path + ".config")
+
     token_emb = nn.Embedding(config.vocab_size, config.hidden_size)
     print(token_emb)
 
-    inputs_embeds = token_emb(inputs.input_ids)
+    inputs_embeds = token_emb(text_ids)
     print(inputs_embeds.size())
 
     multihead_attn = MultiHeadAttention(config)
@@ -200,21 +203,53 @@ def store_emotion_train_data(train_data_path):
     tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
     config = AutoConfig.from_pretrained(model_ckpt)
 
+    config.num_labels = 6
+
     emotions = load_dataset("emotion", trust_remote_code=True)
     train_ds = emotions["train"]
     texts = train_ds["text"]
     labels = train_ds["label"]
 
-    def text2id(t):
-        return tokenizer(t, return_tensors="pt", add_special_tokens=False).input_ids
+    max_text_len = max(len(t) for t in texts)
+    print('max_text_len: ', max_text_len)
 
-    text_ids = [text2id(t) for t in texts]    
-  
+    def text2id(t):
+        return tokenizer(t, return_tensors="pt",
+                         max_length = 20,
+                         truncation = True,
+                         padding = 'max_length',
+                         add_special_tokens=False).input_ids
+
+    text_ids = [text2id(t) for t in texts]
+    text_ids = [x.squeeze() for x in text_ids]
+    text_ids = torch.stack(text_ids)
+    
+    print('text_ids: ', text_ids.shape)
+    print(text_ids[0])
+    print(text_ids[1])
+
+    labels_onehot = list(range(config.num_labels))
+    labels_onehot = torch.tensor(labels_onehot)
+    labels_onehot = F.one_hot(labels_onehot, num_classes=len(labels_onehot))
+    labels_onehot = labels_onehot.unsqueeze(-2).to(torch.float)
+
+    labels = [labels_onehot[x] for x in labels]
+    labels = [x.squeeze() for x in labels]
+    labels = torch.stack(labels)
+    
+    print('labels: ', labels.shape)
+    print(labels[0])
+    print(labels[1])
+
     torch.save(text_ids, train_data_path + ".text_ids")
     torch.save(labels, train_data_path + ".labels")
     torch.save(config, train_data_path + ".config")
 
-    print("Completed to store emotion data ", train_data_path, ", size: ", len(text_ids))
+    print("Completed to store emotion data ", train_data_path, ", size: ",
+          "text_ids(", len(text_ids), ")",
+          "labels(", len(labels), ")",
+          "config(", 1, ")",          
+          )
 
 def validate_train_data(train_data_path):
 
@@ -235,51 +270,51 @@ def validate_train_data(train_data_path):
         return tokenizer.convert_ids_to_tokens(ids)
 
     for tid, label in zip(text_ids, labels):
-        print("text-id: ", text_id2str(tid[0]), ", label: ", label_id2str(label))
+        print("text-id: ", text_id2str(tid), ", label: ", label_id2str(label))
 
 
 
-def train_emotion_classification(train_data_path):
+def train_emotion_classifier(train_data_path):
     print("* test_emotion_classification")
     
     text_ids = torch.load(train_data_path + ".text_ids")
     labels = torch.load(train_data_path + ".labels")
     config = torch.load(train_data_path + ".config")
 
-    print("Completed to load emotion data ", train_data_path, ", size: ", len(text_ids))
+    print("Completed to load emotion data ", train_data_path, ", size: ",
+          "text_ids(", len(text_ids), ")",
+          "labels(", len(labels), ")",
+          "config(", 1, ")",          
+          )
 
-    config.num_labels = 6
-    encoder_classifier = TransformerForSequenceClassification(config)
+    model = TransformerForSequenceClassification(config)
  
-    labels_onehot = list(range(config.num_labels))
-    labels_onehot = torch.tensor(labels_onehot)
-    labels_onehot = F.one_hot(labels_onehot, num_classes=len(labels_onehot))
-    labels_onehot = labels_onehot.unsqueeze(-2).to(torch.float)
-
     #optimizer = optim.SGD(encoder_classifier.parameters(), lr = 0.00000001)
-    optimizer = optim.Adam(encoder_classifier.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9)
+    optimizer = optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9)
+
+    dataset = TensorDataset(text_ids, labels)
+    dataloader = DataLoader(dataset, batch_size=30, shuffle=True)
 
     cnt = 0
     np_epochs = 1
+    
     for epoch in range(np_epochs + 1):
-        for text_id, label in zip(text_ids, labels):
-            pred = encoder_classifier(text_id)            
-            target = labels_onehot[label]
-            loss = F.cross_entropy(pred, target)
+        for batch_idx, samples in enumerate(dataloader):
+            x, y = samples
+            pred = model(x)
+            #loss = F.cross_entropy(pred, y)
+            loss = F.kl_div(pred, y, reduction='sum')
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        
-            cnt += 1
-            #if cnt % 100 == 0:
-            print('[', cnt, ']  loss: ', loss.shape,' ', loss)
+            print('epoch(', epoch, ') batch_idx(', batch_idx, ') loss: ', loss.item())
 
-    torch.save(encoder_classifier, "encoder_classifier_1.model")         
+    torch.save(model, "encoder_classifier_1.model")         
 
 train_data_path = 'hf_emotion_classifier'
 #store_emotion_train_data(train_data_path)
 #test_scaled_dot_product_attention(train_data_path)
 #test_multi_head_attention()
 #validate_train_data(train_data_path)
-train_emotion_classification(train_data_path)
+train_emotion_classifier(train_data_path)
 
