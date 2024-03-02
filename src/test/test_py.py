@@ -106,10 +106,32 @@ def test_class():
     print(cal2.add(7))
 
 
+def test_map():
+    data = [
+        ['1000', 'Steve', 90.72], 
+        ['1001', 'James', 78.09], 
+        ['1002', 'Doyeon', 98.43], 
+        ['1003', 'Jane', 64.19], 
+        ['1004', 'Pilwoong', 81.30],
+        ['1005', 'Tony', 99.14],
+    ]
+    print(data)
+    
+    def append_hello(x):
+        x.append('Hello')
+        return x
+
+    #data = list(map(append_hello, data))
+    data2 = list(map(lambda x: x + ['Hello'], data))
+    print(data)
+    print(data2)
+
+
 #test_reversed()
 #test_tokenizing()
 #test_deep_copy()
-test_zip()
+#test_zip()
 #test_data_preprocessing()
 #test_global()
 #test_class()
+test_map()

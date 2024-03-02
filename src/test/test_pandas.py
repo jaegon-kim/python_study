@@ -9,7 +9,6 @@ def test_series():
     print(f'values: {sr.values}')
     print(f'index:  {sr.index}')
 
-test_series()
 
 
 def test_data_frame():
@@ -25,7 +24,7 @@ def test_data_frame():
     print(df)
 
     # From list
-    print("data frame from list")
+    print("* data frame from list")
     data = [
         ['1000', 'Steve', 90.72], 
         ['1001', 'James', 78.09], 
@@ -42,7 +41,7 @@ def test_data_frame():
     print('y: ', y.to_list())    
 
     # From dictionary
-    print("data frame from dictionary")
+    print("*  data frame from dictionary")
     data = {
         '학번' : ['1000', '1001', '1002', '1003', '1004', '1005'],
         '이름' : [ 'Steve', 'James', 'Doyeon', 'Jane', 'Pilwoong', 'Tony'],
@@ -54,6 +53,11 @@ def test_data_frame():
     print(df.tail(3))
     print(df['학번'])
 
+    print("* data frame from dictionary - no column parameter")
+    df = pd.DataFrame(data)
+    print(df)
 
 
+
+#test_series()
 test_data_frame()
