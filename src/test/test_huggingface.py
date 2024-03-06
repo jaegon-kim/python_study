@@ -79,6 +79,7 @@ from sklearn.metrics import accuracy_score, f1_score
 from transformers import Trainer
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 from torch.nn.functional import cross_entropy
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 #torch.cuda.set_device('cpu')
 
@@ -367,6 +368,77 @@ def test_gemma_2b():
     print(tokenizer.decode(outputs[0]))
 
 
+import os
+
+def test_txt_generation_gpt2():
+
+    #device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cpu"
+
+    # gpt2-xl을 사용하면 메모리 부족
+    # 대신 "gpt" 또는 "gpt2-large"
+    #model_name = "gpt2-xl"
+    model_name = "gpt2-large"
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+
+    import pandas as pd
+
+
+    os.system('clear')
+    print("* model ", model_name)
+    #input_txt = "Transformers are the"
+    #input_txt = "What is your favoriate fruit?"
+    input_txt = input("\n> ")
+
+    input_ids = tokenizer(input_txt, return_tensors="pt")["input_ids"].to(device)
+    iterations = []
+    #n_steps = 8
+    n_steps = 80
+
+    choices_per_step = 5
+
+    try:
+        with torch.no_grad():
+            for _ in range(n_steps):
+                iteration = dict()
+                #iteration["Input"] = tokenizer.decode(input_ids[0])
+                r = tokenizer.decode(input_ids[0])
+                iteration["Input"] = r
+                os.system('clear')
+                print(f"input-txt: {input_txt}")
+                print('-' * 16) 
+                print(r) 
+                print('> ') 
+                output = model(input_ids=input_ids)
+                # 첫 번째 배치의 마지막 토큰의 로짓을 선택해 소프트맥스를 적용
+                next_token_logits = output.logits[0, -1, :]
+                next_token_probs = torch.softmax(next_token_logits, dim=-1)
+                sorted_ids = torch.argsort(next_token_probs, dim=-1, descending=True)
+                #print(f"sorted_ids: {sorted_ids}")
+                # 가장 높은 확률의 토큰을 저장
+                for choice_idx in range(choices_per_step):
+                    token_id = sorted_ids[choice_idx]
+                    token_prob = next_token_probs[token_id].cpu().numpy()
+                    token_choice = (
+                        f"{tokenizer.decode(token_id)} ({100 * token_prob:.2f}%)"
+                    )
+                    iteration[f"Choice {choice_idx+1}"] = token_choice
+                # 예측한 다음 토큰을 입력에 추가
+                #print(f"input_ids: {input_ids}")
+                #print(f"sorted_ids[None, 0, None]: {sorted_ids[None, 0, None]}")
+                input_ids = torch.cat([input_ids, sorted_ids[None, 0, None]], dim=-1)
+                iterations.append(iteration)
+
+    except KeyboardInterrupt:
+        print(pd.DataFrame(iterations))
+    else:
+        print(pd.DataFrame(iterations))
+
+
+
+
 #test_huggingface_pipeline_use()
 #test_translate_kr2en()
 #test_datasets()
@@ -374,7 +446,11 @@ def test_gemma_2b():
 #test_use_tuned_model()
 #test_bert_wordembedding()
 #test_bert_multilang_wordembedding()
-test_gemma_2b()
-local_model_path = "/home/sdn/Workspace/my_model"
-#test_model_tuning_local_store(local_model_path)
-#test_use_tuned_model_local_store(local_model_path)
+classfier_model_path = "/home/sdn/Workspace/my_model"
+#test_model_tuning_local_store(classfier_model_path)
+#test_use_tuned_model_local_store(classfier_model_path)
+
+#test_gemma_2b()
+test_txt_generation_gpt2()
+
+
