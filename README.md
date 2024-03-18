@@ -66,7 +66,11 @@ https://toyourlight.tistory.com/36
 
  KL Divergence (Kullback-Leibler Divergence)
 
+####
+ *우도 (MLE)
+https://huidea.tistory.com/276
 
+ 
 
 ### Activation Function
 
