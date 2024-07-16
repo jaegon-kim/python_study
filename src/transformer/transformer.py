@@ -495,6 +495,6 @@ mode_path = 'my_transformer_1.model'
 model = training_transformer()
 torch.save(model, mode_path)
 
-#model = torch.load(mode_path)
-#eval_transformer(model)
+model = torch.load(mode_path)
+eval_transformer(model)
 
