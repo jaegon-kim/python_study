@@ -445,7 +445,7 @@ def test_txt_generation_gpt2():
 #test_huggingface_pipeline_use()
 #test_translate_kr2en()
 #test_datasets()
-#test_model_tuning()
+test_model_tuning()
 #test_use_tuned_model()
 #test_bert_wordembedding()
 #test_bert_multilang_wordembedding()
@@ -454,6 +454,6 @@ classfier_model_path = "/home/sdn/Workspace/my_model"
 #test_use_tuned_model_local_store(classfier_model_path)
 
 #test_gemma_2b()
-test_txt_generation_gpt2()
+#test_txt_generation_gpt2()
 
 

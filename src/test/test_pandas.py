@@ -57,7 +57,49 @@ def test_data_frame():
     df = pd.DataFrame(data)
     print(df)
 
+from pandas.tseries.offsets import DateOffset
+def test_dateoffset():
+    data = [
+        ["1964-01",2815],
+        ["1964-02",2672],
+        ["1964-03",2755],
+        ["1964-04",2721],
+        ["1964-05",2946],
+        ["1964-06",3036],
+        ["1964-07",2282],
+        ["1964-08",2212],
+        ["1964-09",2922],
+        ["1964-10",4301],
+        ["1964-11",5764],
+        ["1964-12",7312],
+        ["1965-01",2541],
+        ["1965-02",2475],
+        ["1965-03",3031],
+        ["1965-04",3266],
+        ["1965-05",3776],
+        ["1965-06",3230],
+        ["1965-07",3028],
+        ["1965-08",1759],
+        ["1965-09",3595],
+        ["1965-10",4474],
+    ]
+    df = pd.DataFrame(data, columns=['Month', 'Sales'])
+    df['Month'] = pd.to_datetime(df['Month'])
+    df.set_index('Month',inplace = True)
+    #print(df)
+    #print('-' * 16)
+    #print(df['Sales'])
+    future_dates=[df.index[-1]+ DateOffset(months=x)for x in range(0,24)]
+    print(future_dates)
+    print('-' * 16)
+    future_datest_df=pd.DataFrame(index=future_dates[1:],columns=df.columns)
+    print(future_datest_df)
+    future_df=pd.concat([df,future_datest_df])
+    print('-' * 16)
+    print(future_df)
+
 
 
 #test_series()
-test_data_frame()
+#test_data_frame()
+test_dateoffset()
