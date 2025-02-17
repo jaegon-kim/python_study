@@ -378,3 +378,30 @@ https://ariz1623.tistory.com/312
 ## Gemma
 * Google open LLM model
 * https://blog.google/intl/ko-kr/products/explore-get-answers/-gemma-open-models-kr/
+
+# Open AI O1 Architecture
+참고 링크 
+https://www.youtube.com/watch?v=bTpIvRfVREg
+https://ameli.notion.site/OpenAI-O1-17e2eb5de6448046b7b6d4f4b8d73ced
+
+Training 시간이 늘면 성능이 늘어난 다는 것은 많이 참조되어 있었지만 Test Time (Inference Time)이 길어 지면 성능이 늘어나는 것에 주목하게 됨 (CoT: Chain Of Thought)
+Test Time Compute가 중요해 짐 (Llama 3 3B 모델이 CoT를 2^8 번을 반복하면, Llama 3 70B의 Zero Shot 보다 성능이 좋아지게 된다.)
+Frontier 모델을 기반으로 Test Time Compute를 투입해서 학습 데이터를 만들어 내고 다시 Training을 함
+
+
+2022년 1월 Google 이 발표한 CoT(Chain Of Thought)
+Tree of Thought 도 있음
+
+Test Time의 Reasoning 과정의 RL(Re-enforcement Learning)이 중요해짐
+
+o1 연구에 핵심적으로 참여했던 연구자들이었던 Noam Brown 이 O1 은 그냥 일반적인 LLM 구조라는 트윗을 날렸고, 
+정형원 박사는 model 을 어떻게 incentivize 하느냐에 따라서 많은 가능성을 가진다라는 발표들을 통해서 모델 architecture 가 뭔가 특이하지 않은 일반적인 구조라는 것에 대한 여운을 남김
+(https://www.youtube.com/watch?v=kYWUEV_e2ss)
+
+2025년 현재 외부에 공개되어 있는 o1 수준의 reasoning model 은 
+Deepseek r1 lite 와 
+Alibaba 에서 발표한 QwQ 32B-preview ( QwQ : Qwen with Questions ) --> PC에서도 동작한다고 함.
+
+* 요새는 Fine Tuning이라는 말을 잘 안쓰고, Post Training이란 말을 많이 쓰기 시작함
+
+
