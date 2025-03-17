@@ -126,6 +126,24 @@ def test_map():
     print(data)
     print(data2)
 
+from decimal import Decimal
+
+def test_num_scale():
+    G = 6.67428e-11
+    print('G:', G)
+    v1 = -4.2635e-5
+    v2 = -4.2635 * 10**-5
+    print('v1: ', v1) 
+    print('v2: ', v1) 
+    AU = 149.6e6 * 1000
+    v3 = -4.2635e-5 * AU
+    print('v3: ', v3) 
+    v4 = 10e1000
+    print('v4: ', v4) 
+    v5 = Decimal('10e1000')
+    print('v5: ', v5) 
+
+
 
 #test_reversed()
 #test_tokenizing()
@@ -134,4 +152,5 @@ def test_map():
 #test_data_preprocessing()
 #test_global()
 #test_class()
-test_map()
+#test_map()
+test_num_scale()    
