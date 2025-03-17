@@ -144,13 +144,31 @@ def test_num_scale():
     print('v5: ', v5) 
 
 
+import os
+def test_fs():
+    print('test_fs')
+    for path, dirs, files in os.walk('./src/transformer'):
+        # All the directory path under ./      
+        print('path: ', path)
+        # Sub directories under the 'path'
+        print('dirs: ', dirs)
+        # Files under the 'path'
+        print('files: ', files)
+        # path + file concatenation
+        for file in files:
+            print(os.path.join(path, file))        
+>>>>>>> fe71a895688dc5a74e3e64ccd2e5a0ee27c43af0
 
 #test_reversed()
 #test_tokenizing()
 #test_deep_copy()
-#test_zip()
+test_zip()
 #test_data_preprocessing()
 #test_global()
 #test_class()
 #test_map()
+<<<<<<< HEAD
 test_num_scale()    
+=======
+#test_fs()
+>>>>>>> fe71a895688dc5a74e3e64ccd2e5a0ee27c43af0

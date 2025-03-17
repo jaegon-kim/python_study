@@ -1,6 +1,7 @@
 *.pyc
 *.model
-*.npy
 hf_emotion_classifier.config
 hf_emotion_classifier.labels
 hf_emotion_classifier.text_ids
+src/test/distilbert-base-uncased-finetuned-emotion
+distilbert-base-uncased-finetuned-emotion
