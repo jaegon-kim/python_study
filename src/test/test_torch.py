@@ -822,7 +822,7 @@ def test_onehot_encoding():
     print(one_hot_encodings)
     print('[0]: ', one_hot_encodings[0])
 
-#test_cuda_available()
+test_cuda_available()
 #test_1d_tensor()
 #test_2d_tensor()
 #test_broad_casting()
@@ -832,7 +832,7 @@ def test_onehot_encoding():
 #test_max()
 #test_tensor_manipulate()
 #test_masked_fill()
-test_squeeze()
+#test_squeeze()
 #test_type_casting()
 #test_long_tensor()
 #test_ones()

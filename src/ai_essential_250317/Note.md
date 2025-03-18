@@ -1,0 +1,471 @@
+
+# AI Essential 과정
+
+강사 : 이우엽
+
+## 수업 자료 채널
+자료: https://mm.jaen.kr/ai-essential-67/channels/off-topic
+
+https://mm.jaen.kr
+아이디 : essential67
+비밀번호 : welcome1!
+
+## Daily Queez
+https://manage.jaen.kr
+아이디 : 이름
+패스워드 : welcome1!
+
+## Colab 링크
+
+### Day 1
+원본: https://colab.research.google.com/drive/1_e-kZADHCXFGcDnuoZTJ7ow5gOd54IYH?usp=sharing#scrollTo=1edf01db
+사본: https://colab.research.google.com/drive/1q-B58ccSUkFZYA065bz-f7zY6IRiT28i#scrollTo=c06ec169
+
+
+
+(Day 1)
+# Python
+## import 
+- import를 사용할 경우 바로 밑에 있는 것만 붙을 수 있음 
+- 맨 밑에 까지 연결이 안될 수 있다.
+
+## from mymodule import welcome 
+- 맨 밑에 까지 연결이 된다.
+
+## Python의 인덱싱
+- 양수 인덱싱 (왼쪽 부터 시작하는 인덱싱)
+- 음수 인덱싱 (오른쪽 부터 시작하는 인덱싱)
+
+
+tensor_2d[0, :] = 100' 를 쓰는 것과 ;tensor_2d[0][:] = 100 의 차이
+- 뒤에 것은 쓰지 않는 것이 좋다.
+- intemediate 처리하는 과정에서 copy가 발생할 수 있다. 
+
+## Tensor Flow/Pytorch
+- Tensor Flow
+  - 정적 그래프 (성능이 조금 더 좋음)
+  - 지금은 거의 사용하지 않는다.
+  - 사용자가 최적화에 대한 고민을 좀 덜한다. (저점이 높다.)
+    - 다중화/Multi Core등에 대해서는 고민을 좀 덜한다.
+- Pytorch
+  - 동적 그래프 (사용성이 더 좋다)
+
+ 
+# Pytorch
+
+## (시험 나온다) Tensor (p17 ~ 26): 실기와 필기가 모두 나온다
+
+- 다차원의 배열(행렬)
+- Pytorch Tensor는
+  - 자동 미분을 지원한다.
+  - GPU(CUDA)를 지원하여 연산을 가속할 수 있다. (장치를 쉽게 이동힐 수 있다.)
+
+
+## (시험 나온다) Shape을 조정하거나, 최대값을 찾거나 (연습문제 02-001 ~ 02-004)
+
+
+# 인공지능
+
+## 개요
+
+### 목표: 인간처럼 생각하고 학습하고 문제를 해결
+- 분석
+- 학습
+- 추론 (예측, CoT)
+
+### 분류
+- ANI: 좁은 인공지능 
+- AGI: General AI
+- ASI: 초지능 (사람을 초월하는 인간의 능력)
+
+### 모델의 선택
+- 통계적 기법 (정형 데이터)
+- 알고리즘 기반 (정형 데이터)
+- 신경만 기반 (비 정형 데이터)
+
+##  머신러닝
+
+- 명시적인 프로그래밍 없음, 입력을 토대로 출력을 만들기 위한 규칙을 찾아 내는 것
+
+- 모델: 입력 데이터를 바탕으로 예측이나 결정을 내리는 학습의 결과물 (선형회귀, 의사결정 트리, 신경망 등 다양한 알고리즘을 통해 규칙을 학습)
+  - 판별 모델(Discriminative Models): 주어진 입력 데이터를 기반으로 목표 변수를 직접 예측
+    - Classification
+  - 생성 모델(Generative Models): 주어진 입력 데이터를 통해 분포를 학습하여, 새 데이터를 생성
+- 프로그래밍과 머신러닝의 차이
+   - 생성과정
+    - 프로그래밍: 프로그래머가 입력과 출력을 분석하여 로직을 설계 (주어진 입력과 출력이 적어도 Rule을 만들 수 있다.)
+      - 경우의 수가 많아 지면, 만들기 어렵다.
+    - 머신러닝:
+	    - ... 
+  - Task
+    - 프로그래밍: 상대적으로 정형화된 문제
+	- 머신러닝: 상대적으로 정형화되지 않은 문제
+  
+- 학습 
+  - W, b를 찾는다 (y`이 실제 값 y에 가까워 지도록), 과적합이 발생할 수 있다.
+    - 표현력도 좋고
+    - 일반화도 잘되는
+
+- 머신 러닝의 학습 절차 (시험에 나온다.)
+  - 문제 정의 : 문제 정의
+  - 데이터 수집
+  - 데이터 전처리
+    - 분석 과정의 전처리: 특징을 추출하기 위한 목적, 독립 변수의 통폐합 
+	- 학습을 하기위한 전처리: 인코딩 등(ex, 문자열-> 숫자열, 값의 Scaling 적용)
+  - 모델 선택 
+  - 모델 학습
+  - 모델 평가
+    - 표현력: 학습 데이터로 평가한다.(학습 데이터를 잘 반영한 것)
+	- 일반화: 테스트 데이터와의 차이로 평가한다.
+	  - 모집단의 내용이 잘 반영. 학습되지 않는 데이터에 대한 결과도 잘 내야 함
+  - 모델 개선
+    - 하이퍼파라미터 튜닝
+	- 데이터 확장
+	- 알고리즘 변경
+  - 예측 및 적용
+
+- 좋은 머신 러닝 모델 
+  - 성능 (일반화)
+  - 예측도
+  - 복잡도 (데이터의 복잡도에 맞는 적절한 복잡성) 
+    - 정확한 계산은 불가하지만, 그러나 LLM에서는 사용함, 단어 개수 등 
+ 
+
+- 머신 러닝 학습 유형 (시험에 나온다)
+  - 지도학습 (Supervised Learning)
+    - 정답(y, 레이블)이 있는 데이터를 이용하여 학습
+	- 모델은 주어진 입력(Features)에 대한 출력(y`)을 예측 
+	- 지도하는 과정: 정답과 출력의 차이를 줄이는 방향으로 지도하는 과정이 있어야 함
+	- Regression, Classification
+	
+  - 비지도 학습 (Unsupervised Learning)
+    - 지도하는 과정이 없음 
+	  - 레이블이 없을 떄
+	  - 레이블이 필요 없을 때
+	- 차원 축소
+	  - 특징 추출 (레이블을 안쓴다.)
+	    - Interaction: 상호 작용
+		- 데이터 시각화
+	  - 지도 학습의 전처리 용도로 활용한다.
+	- 군집화
+	  - 레이블이 없는 경우
+	  - 고객 세분화
+	  
+  - 자가 지도 학습 (Self Supervised Learning)
+    - 지도학습 임 (자기 자신을 복원하거나..)
+	- Auto Encoder, Transformer
+
+
+- 주요 용어
+ - 데이터 셋
+   - 훈련(Training) 데이터 셋과 평가(Test) 데이터 셋은 교집합이 없어야 한다.(Hold Out)
+     - 평가 데이터 넷은 훈련 데이터 넷에 누설 되면 안된다.
+ - Features
+ - Label
+ - True Value (Label)
+ - 예측 값 (Predicted Value)
+ - 실제 값과 예측 값의 관계
+   - 회귀: 손실, 오차/잔차
+   - 분류: 손실 (Cross Entropy에서는 오차/잔차라는 말을 쓰지 않는다)
+
+## 딥러닝
+- 비정형 데이터 문제를 해결하는데 특화됨
+  - 전통적인 머신 러닝과 비교해서
+    - 특징 추출 과정에서 발생 할 수 있는 Feature 로스가 발생하지 않아 성능이 좋다.
+	
+
+
+# DNN(Deep Neural Network)
+## 심층 신경망 (시험에 나온다.)
+  - Fully Connected Network(FCN), Feed Forward Network(FFN) 이라고도 불리운다
+  - 입력층 (Input Layer)
+    - 실존하지는 않고, 개념적으로 만 있다. (Keras에서는 있도록 권장한다)
+  - 은닉층 (Hiddle Layer)
+    - 10년 전만 해도 10 ~ 20개 층이었다.  
+	- 특징을 추출한다.
+	- Perceptron으로 구성되어 있다.
+	- hidden layer들 간에 Fully Connected 되어 있어서 FC Layer라고도 한다.
+  - 출력층 (Output Layer)
+	- Perceptron으로 구성되어 있다.
+
+## 각 Layer 
+  - Perceptron
+  - Neuron 이라 불리는 계산 단위: 가중치(Weight) 화 편향 (Bias) 이라는 파라미터를 사용하여 데이터를 처리함   
+
+## 심층 신경망 학습 과정 
+### 학습 단계 개요
+- 순전파
+- 손실계산
+- 역전파(미분)
+  - 제프리 힌튼이 개발했다.
+- 최적화 
+  - 경사 하강법
+
+### 순전파(Feed Forward Propagation)
+- 예측값을 생성하는 것
+- 사용처
+  - 학습
+  - 평가
+  - 추론    
+  - 가중치
+  - 편향
+  - 활성화
+  - 다각화 
+  - 하이퍼 파라미터
+  - 뉴런 개수
+  - 계층 수
+
+
+### 손실 계산 (시험에 나옴)
+- 손실 값이 최소화 되도록 Loss Function(손실함수/목적 함수)을 사용해서 계산
+  - 차이의 제곲의 합이 최소화 되도록 
+- 회귀에서 사용 가능한 손실 함수 
+  - 연속 값 (실제와 예측값을 차분으로 계산 가능할 때)
+  - MSE (Mean Square Error) : 오차의 절대값이 클 수록 큰 페널티
+    - 차분이 지수적으로 증가함. 크게 튀는 오차를 줄이게 됨. 작은 오차는 커짐. 중간에서 만남.
+  - 오차의 편차는 줄어듬. Outlier
+  - MAE (Mean Absolute Error)
+    - 큰 오차도 줄고, 작은 오차도 줄어듬
+  - 오차의 편차가 크지 않지만, 가끔씩 튀는 것들이 나옴 
+  - 오차/잔차
+    - 오차: 예측값을 만드는 데이터가 모집단인 경우
+      - 잔차: 예측값을 만드는 데이터가 표본인 경우
+
+- 분류에서 사용하는 손실 함수 
+  - 분류의 출력은 확률로 표현할 수 있음
+
+  - 확률 분포 간의 차이를 계산하는 방법
+
+  - Cross Entropy 
+      - 다중 클래스 분류 문제 (선택할 수 있는 레이블의 개수가 여러 개임)
+  
+  - Binary Cross Entropy
+    - 이진 분류 문제 분석에 사용
+
+### 역전파
+- 경사하강법 (Gradient Descent)
+  - 이 작업을 수행하면 미분 값이 작아진다.
+  - W, b를 조정한다. (Otimizer)
+- Loss에 대한 미분 값을 반영하는게 경사 하강법 임
+  - 출력층으로 부터 입력층 방향으로 미분 + Chain Rule을 적용하여 미분을 계산하는 방법
+  - 미분 값을 재사용함
+
+- 경사 하강법을 쓰기 위한 것임
+
+
+### 활성화 함수 (시험에 나옴)
+- 선형 결합 결과 (가중치 곱의 합)을 비선형 결과로 변환 
+    - 출력층의 활성화 함수
+    - 출력층의 형태로 변환하기 위한 것
+    - 쓸수도 있고 쓰지 않을 수도 있음
+  - 은닉층의 활성화 함수
+    - 모델에 비 선형성을 준다.(가중합을 비선형 변환)
+- Sigmoid 
+  - 입력 값을 0~1사이로 압축 
+  - 기울기 소실 (Gradient Vanishing)
+    - 은닉층에 sigmoid를 쓰면 미분 값이 매우 작아 지는 효과가 있어서 잘 쓰지 않는다.
+    - 미분 값이 너무 작아져서 학습이 안된다.
+    - Sigmoid의 미분은 0 ~ 0.25가 된다.
+
+- Tanh
+  - 입력 값이 범위가 -1 ~ 1
+  - 미분 값의 범위가 0 ~ 1
+    - Gradient Vanishing이 완화된다.
+
+- ReLu (Reflected LU)
+  - 음수면 0, 양수면 그 값을 그대로 쓴다. 
+  - 미분 값은 0, 1
+    - 활성화 함수에 의한 기울기 소실 문제가 없다.
+  - 1이 나오면 좋음
+  - 0은 가끔씩 나오는 경우에 사용 가능. 계속 0이 나오면 학습이 안됨
+    - Dying ReLU (입력 결과와 무관하게 항상 0이 나오면 학습이 진행되지 않음)
+    
+  - 미분 불가지점(0)이 있다. 좌미분을 해서 0으로 처리    
+  - 연산량이 적다.
+  
+- Leaky ReLu
+  - 음수 인 경에에 0보다 살짝 큰 값을 줌.
+- 출력 값이 양수 이면 쓰기 좋고, 음수가 많이 나오면 미분 값이 아주 작아서 학습이 잘안된다.
+- 양수 값이 많다면 ReLU의 훌륭한 대체제이다.
+- 연산량이 적다.
+
+- ELU
+  - 음수가 완만하게 줄어든다.
+- 연산량이 많다. (Exponential 연산)
+
+
+- 활성화 함수 고르기
+  - Gradient Vanishing이 발생하는지.
+- 출력 데이터가 양수가 많은지, 음수가 많은지에 따라서 고름 
+- 재학습이 용이한지 여부 
+- 처음 하는 사람은 ReLU나 Leakt ReLU를 쓰면 됨.
+
+![](Note_image/activation_function.PNG)
+
+	
+### 자동화 미분 (시험에 나온다)
+  - 각 Training Step 마다, 미분을 하는 데 미분 값을 누적하지 않고 초기화 한다.
+    - Fine Tuning 등을 하는 경우, 초기화 하지 않고 iteration을 한 후 평균 값을 반영하는 경우에 사용한다.
+
+### 경사 하강법 유형 (시험에 나온다)
+- 1 Epoch
+  - 전체 N개 데이터 모두에 대해서 w, b update 하는것
+
+- 학습하는 데이터의 크기에 따른 분류
+
+  - 배치 최적화 도구/배치 경사 하강법(Batch Gradient Descent)
+    - 전체 N개 데이터를 한번에 넣어서 손실을 평균 내고 w, b를 '한번' 업데이트 하는 것.  손실이 1개이다.
+    - 안정적이다 (왔다 갔다 널뛰지 않고 조금씩 내려 온다)
+      - 불안정적: 기울기 0을 기준으로 왔다 갔다 널뛰는 것
+    - 정확하다. (학습 데이터에 대해 과적합된다는 의미, 좋지 않다)
+    - 한번에 메모리 요구사항도 커서 비효율 적이다.
+    - 여러 epoch을 돌려줘야 한다.
+
+  - 확률적 경사 하강법 (Stochastic Gradient Descent, SGD)
+    - 학습 데이터에서 랜덤 샘플링(확률) 하고, 매 반복마다 한개의 데이터 포인트를 사용하여 기울기로 계산
+    - N개의 데이터로 N개의 w, b 업데이트 한다.
+      - N개의 업데이트가 되므로, N개 데이터로 학습하는데 부하가 더 큼
+    - 계산이 빠르고(1개의 계산만 하므로..), 적은 메모리를 사용한다.
+    - 안정적이지 않다. (진동이 발생한다). 수렴이 잘 안된다.
+    - epoch을 많이 안돌려도 된다.
+
+  - 미니 배치 경사 하강법 (Mini-batch Gradient Descent)
+    - M개 샘플링의 미니 batch로 학습을 하겠다. 각 배치에 대해 w, b를 계산하고 업데이트 한다.
+    - 계산 효율성과 안정성을 모두 제공하고, 크기에 따라 성능이 달라질 수 있다.
+
+
+### Optimizer (최적화 도구) (시험에 나온다)
+- Loss를 최소화 하기 위해 W, b 업데이트
+
+- 모멘텀 (Momentum)
+  - 기울기의 누적치를 사용하여 진동을 줄이고, 더 빠르게 최적점에 도달
+  - 로컬 미니멈을 벗어나서, Global 미니멈 굴러 떨어지게 만들도록 함
+  - Nesterov Momentum (Global 미니멈도 굴러 떨어지는 문제를 보완)
+
+- 적응형 학습률 
+  - eta (learning rate) 앞에 scale factor를 곱해줌
+    - 기울기가 클때는 작게 조정, 기울기가 완만 할 때는 크게 조정(빨리 벗어남)
+  - AdaGrad (수식에 오류가 있음. 오래 학습하면 learning rate이 0으로 수렴),
+  - RMSprop (AdaGrad 수식 오류) 
+  - Adam (RMSprop + Momentum)
+    - Variation 들도 있지만 크 성능상의 차이가 있지는 않음
+
+
+### 데이터 로더 71p ~ 76 (시험에 나온다)
+- CustomDataSet 구성 방법
+
+
+### 반복학습
+- 데이터를 점진적으로 학습하는 과정
+- epoch: 학습 데이터를 한번에 모두 통과시키는 과정
+  - 너무 많은 epoch를 하면 학습 데이터에 과적함 됨
+
+### 심층신경망 구현 - 모델 (p84)
+- 출력층의 손힐 함수, 활성화 함수, 출력 뉴런 개수를 어떻게 구성하는지
+- 회귀
+  - Loss Function: MSE/MAE (차로 계산할 수 있는 Loss Function)
+  - 출력층 활성화 함수: 안씀
+- 이진 분류
+  - Loss Function: BCE (nn.BCELoss)
+  - 출력층 활성화 함수: Sigmoid 등
+- 다중 분류
+  - Loss Function: Cross Entropy
+  - 출력층 활성화 함수: 없음(내부적으로 Softmax)
+    - Softmax를 사용하나, PyTorch에서는 nn.CrossEntropyLoss()가 내부적으로 Log Softmax를 사용하고 있음 (계산 안정성의 장점이 있음
+
+
+### DNN 성능 향상 방법
+- 학습 결과의 분석
+
+![](Note_image/overfitting.PNG)
+
+  - Training Data Loss와 Test Data Loss의 차이가 나는 경우 --> 일반화가 잘 안되어 있는 것임. (과대적합/Overfitting이 되었음) - Training data의 성능만 계속 좋아짐
+  - Data가 충분하지 않은 경우에 발생한다.
+    - 그러나 Training Data를 늘리는 것은 맨 나중에 하는 일이고
+    - 교차 검증 / Data Validation
+      - K Fold 
+        - Test Data와 Training Data를 섞어서 K개 Fold로 나누어서 데이터의 표준 편차 등을 검사 
+        - 성능이 많이 떨어지는 Fold가 있는지 검사해 봄
+
+  - '하이퍼 파라미터 튜팅'을 한다.
+
+- 과대적합
+  - Bias : 중심에서 얼마나 많이 벗어나 있는가 ?
+    - Bias가 크년 Underfitting임 (Training Data와 Test Data도 잘 반영되지 않았음)
+  - Variance
+    - 탄착군이 몰려 있지 않은 것
+
+  - 학습이 잘 된것 : Low Bias + Low Variance
+  - Overfit : Low Bias + High Variance
+  - Underfit : Hig Bias + Low Variance, High Bias + Low Variance
+
+![](Note_image/bias_variance.PNG)
+
+- 과대 적합 완화 방안
+  - 데이터를 더 많이  수집한다.
+  - Drop Out 
+    - 학습 중에 신경만의 일부 뉴런을 부작위로 꺼서, 신경망이 특정 뉴런이나 경로에 과도하게 의존하는 것을 방지
+    - 학습: Drop Out 비율 만큼 0으로 설정
+    - 추론: 0으로 설정하지 않고, Sclale 한다....
+    - model.train(), model.eval() 에 의해 구분 된다.
+  - Regularization (정칙화)
+    - W의 절대 값의 크기를 작게 유지(제어) 한다.
+      - 절대 값이 커지면 모델의 표현력이 좋아진다.
+      - 절대 값이 작아지면 모델의 표현력이 낮아진다.
+      - W가 커치면 손실이 커지는 상황이 발생할 수 있다.
+      - 손실함수에 Penaty를 추가 하는 방식으로 적용한다.
+      - PyTorch에서는 정칙화를 구현하지 않고, Weight Decay W = W0 - eta(미분) 하는 방법을 사용함 
+      - SGD에서 Wegith Decaly를 적용하는 방법은 다음과 같음
+        - optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.01)
+   - L1/L2 정칙화를 적용하면 모델의 목적을 수정하여 모델이 학습 데이터 손실에 집중하는 것을 방해 (?)
+  - Early Stopping: Epoch 제어 (과대적합이 시작되기 전에 학습을 중지)
+    - Epoch를 크게 줘도 성능이 나빠질것 같으면, 자동으로 동작 시킴. 모델 Check Pointing을 같이 씀
+    - Check Pointing : 모델 성능이 잘 나올 떄, 모델 파라미터를 저장시킴. 
+
+  - Batch Normalization (정규화)
+    - Feature Scaling (Data 전처리 작업에서 사용한다.)
+      - Scaling이 다른 Feature들의 Scale을 맞춘다.
+      - 수렵의 속도 상승을 위해 개발되었다.
+    - Batch Normalization은 전처리가 아니라 각 FC에 적용하는 것이다.
+      - 표준화를 하면 절대적인 크기는 줄고, 상대적인 크기는 유지된다.
+      - 정규분포(평균이 0이고 표준 편차가 1이된다.) Out Lier를 짤라져서 Overfitting 완화가 된다.
+      - 미니 배치에서 평균과 분산을 계산한다.
+        - 값을 누적해 놓았다가, 추론할 때 적용한다. (train과 Eval의 동작이 다르다)
+      - Linear와 Activation 함수 사이에 넣는 것이 성능이 가장 좋다.
+
+  - Ensemble - 모델을 여러개 만들고, 모델의 편향을 줄임
+    - 자원을 많이 먹음 (대부분의 모델에서 성능 향상됨)
+    - Mixture of Expert in LLM 도 Ensemble에 적용되는 방법임 
+
+# CNN
+- 2D Data: DNN에서 했던 데이터는 순서/위치가 없는(순서가 바뀌어도 상관 없음) 2d 독립 변수
+- 4D Data: 그림 이미지: 3차원의 의미가 있음. 순서가 중요함.
+  - 4D Data를 2D Data로 바꿔서(평탄화) 할 수 있다. (Location 정보가 소실 된다)
+  - 2D로 바뀌어도 이미지의 특질을 어떻게 유지할 수 있을까 ? (이미지를 가공/특징을 추출 한다) --> CNN
+- 특징 추출 부 + DNN 으로 구성된다.
+
+## 합성곱 신경망/Convolutional Neural Network(CNN) (시험에 나온다)
+- DNN이 풀지 못하는 4차원 데이터(이미지 데이터) 문제를 푸는데 특화된 딥러닝 모델 
+- 합성곱 층, 풀링 층,FC 층으로 구성되낟.
+
+### 합성곱 층
+- ch, h, w 등의 특징을 추출하는 계층
+- 필터를 슬라이딩 입력 처리하여 특징 맵(Feature Map)을 만든다.
+  - 데이터의 공간적 구조를 유지하며, 유의미한 패턴(가장자리, 질감)을 학습
+  - 필터(또는 커널)는 작은 크기 행렬로 구성
+  - Receptive Field: 특징을 추출하는 필드. 필터를 적용하여 곱하고, 더한다 (합성 곱)
+
+  - 필터 자체가 학습을 통해서 완성된다.
+    - 3x3 커널은 9개의 W를 갖는다.    
+![](Note_image/convolution.PNG)
+  - 특징 맵은 입력 이미지 보다 작아진다.
+  - 패딩
+  - 스트라이드 (스트라이드에 따라 연산이 안되는 영역이 생길 수 도있다)
+
+# WorkSop
+Q: https://colab.research.google.com/drive/1CwQsd7HSrvlOwClX7sh1XEXJE4h-0iVO?usp=sharing
+S: https://colab.research.google.com/drive/1HyHNPWJ1woRdkjXQ1UW7BkZxFeJ1-1Sl?usp=sharing
+리더보드: http://ai.jaen.kr/leaderboard?competition_name=House+Price+Prediction&course_name=AI+Essential&course_round=0317%281%29
+
+## 
+https://colab.research.google.com/drive/1GyUl8gcM9Yi1GL5HWS7jy--Vqe0uwonM#scrollTo=ddd1d918
