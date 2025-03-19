@@ -443,10 +443,13 @@ tensor_2d[0, :] = 100' 를 쓰는 것과 ;tensor_2d[0][:] = 100 의 차이
   - 4D Data를 2D Data로 바꿔서(평탄화) 할 수 있다. (Location 정보가 소실 된다)
   - 2D로 바뀌어도 이미지의 특질을 어떻게 유지할 수 있을까 ? (이미지를 가공/특징을 추출 한다) --> CNN
 - 특징 추출 부 + DNN 으로 구성된다.
+- CNN의 은닉층: 비선형 활성화 함수가 붙는 부분을 CNN 은닉층이라 한다.
 
 ## 합성곱 신경망/Convolutional Neural Network(CNN) (시험에 나온다)
 - DNN이 풀지 못하는 4차원 데이터(이미지 데이터) 문제를 푸는데 특화된 딥러닝 모델 
-- 합성곱 층, 풀링 층,FC 층으로 구성되낟.
+- 합성곱 층, 풀링 층,FC 층으로 구성된다.
+  - Feature 추출 : 합성곱 층 + 풀링 층
+  - 의사 결정 : FC 층
 
 ### 합성곱 층
 - ch, h, w 등의 특징을 추출하는 계층
@@ -455,17 +458,181 @@ tensor_2d[0, :] = 100' 를 쓰는 것과 ;tensor_2d[0][:] = 100 의 차이
   - 필터(또는 커널)는 작은 크기 행렬로 구성
   - Receptive Field: 특징을 추출하는 필드. 필터를 적용하여 곱하고, 더한다 (합성 곱)
 
-  - 필터 자체가 학습을 통해서 완성된다.
+  - 필터 자체가 학습을 통해서 완성된다. (필터가 학습된다)
+    - 기존에 알려져 있는 미분 필터나, 블러링 필터가 아닐까 추정하지만 완전한 해석은 되지 않는다.
     - 3x3 커널은 9개의 W를 갖는다.    
 ![](Note_image/convolution.PNG)
-  - 특징 맵은 입력 이미지 보다 작아진다.
-  - 패딩
-  - 스트라이드 (스트라이드에 따라 연산이 안되는 영역이 생길 수 도있다)
+  - 특징 맵의 크기는 원본 이미지 보다 작아진다.
+- 패딩 (짜투리 공간에 0을 채운다)
+- 스트라이드 (스트라이드에 따라 연산이 안되는 영역이 생길 수 도있다)
+- channel
+  - 이미지가 R/G/B로 표현된다고 한다면, R/G/B 각각이 하나의 channel이된다.
+![](Note_image/cnn_multi_channel.PNG)
+- 특징 맵 크기 계산
+  - 28, 28이미지 3X3 필터 적용
+![](Note_image/cnn_map_size.PNG)  
+  - K: 3, P: 0, S: 1을 많이 쓴다.
 
-# WorkSop
+
+### 풀링 층(시험에 나온다)
+![](Note_image/cnn_pooling.PNG) 
+- 특징 맵의 공간적 크기를 줄여 준다. (계산 복잡도 감소, 과적합 방지) 
+  - Overfitting을 완화하는 역할도 중요하다.
+- 필터를 만들어서 최대 값(Max Pooling)을 뽑거나, 아니면 평균(Average Pooling)을 적용한다. (자료 114 Page 참고). 현재는 Max Pooling 만 사용한다.
+
+### FC (완전 연결 층)
+
+- 모델
+Conv > ReLU > Conv > ReLU > Max Pooling > Cov > ReLu > Pool
+--(4D)--> FLAT --(2D)--> Linear > ReLu > Linear > Softmax  
+
+### CNN Pytorch 
+(시험에 나온다. Model 구현)
+#### nn.Conv2d
+- 2d: h, w + ch
+- parameter
+  - in_channels: 입력 이미지 채널 수 (흑백:1, RGB: 3)
+  - out_channels: feature map의 수
+  - kernel_size: 커널 크기 (3x3을 중첩해서 많이 씀) 2014년 논문
+  - stride: 1 (2쓰는 경우는 거의 없음)
+  - padding: 입력의 가장 자리에 추가되는 패딩 양 
+
+#### MaxPool2d
+- parameter
+  - kernel_size: 풀링 적용 영역 크기 2
+  - stride: 풀링 창이 이동하는 간격
+  - padding: 0 (안쓴다)
+
+#### 학습 데이터 셋
+- Fashion-MNIST 
+
+## 전이학습(Transfer Learning)과 미세조정
+- 전이학습: 이미 학습된 모델을 활용하여 새로운 작업에 적응 시키는 기법
+  - Top/Head가 포함되어 있는 계층(FC 계층)을 교체함
+  - 대규모 데이터 세트(Image Net)에서 학습된  CNN 모델(VGG, RestNet, Inception)을 활용함
+    - 기존 모델의 가중치를 고정(freeze)하고, 새로 학습할 데이터 세트에서 분류 계층만 재학습
+    - Conv 계층은 동결하고, FC만 다른 모델로 교체하여 학습
+    - 'requires_grad = False'를 활용하여 동결한다.
+  - 미세 조정은, 기존 학습 모델의 일부/전체 계층을 고정하지 않고, 로운 데이터에 맞게 재학습
+    - Conv 계층의 앞 부분은 고정하고, 일부와 FC만 교체하여 학습
+
+## CNN 동향
+### ILSVRC 대회
+- AlexNet
+  - Drop Out, ReLu 사용이 제안되었음
+- VGG Net (2014)
+  - 3x3 커널 중첩
+  - 계층이 깊이
+- RestNet (2015)
+  - 계층의 깊이의 한계를 없앰
+  - 20~25층의 성능이 한계다 (50층 보다 20층 성능이 더 좋더라..., Vanishing Graident 라고 생각했음)
+  - 20층의 출력을 50층으로 바로 전달 해줬더니 성능이 더 좋아짐
+  - 잔차(ByPass) : 층간 통신
+- Vision Transformers (2020)
+  - Nvidia DLSS (샘플링)
+
+## CNN 응용
+- 분류
+- 분류 + Localization 
+  - Bounding Box
+- 객체 탐지
+- 세그멘테이션
+- 초해상도
+  - Low Resolution --> High Resolution
+
+## YOLO 실습 (Ultraytics)
+
+## 초해상도 실습
+
+## Stable Diffusion 실습
+
+## 이미지 생성형 AI
+### Auto Encoder 
+- Encoder: 이미지를 압축해서 Latent Vector로 만듬
+- Decoder: Latent Vector로 부터 다시 이미지를 만듬
+
+### VAE(Variational Autoencoder)
+- 입력 이미지의 Latent Vector의 분포(평균/분산)를 학습해서, Random Sampling 해서 이미지를 생성
+- Diffusion Model의 보조 도구 등으로 사용 중임
+
+### GAN(Generative Adversarial Network)
+- Generator(가짜 이미지를 만드는)와 Discriminator(진짜 인지를 판별하는) 간에 경쟁
+- Discriminator가 Collapse되면 학습이 안되는 문제가 있음 
+- 작은 이미지 밖에 못만듬. Upscaler 등으로 사용 가능 
+
+
+### Diffusion
+- Forward Diffusion
+  - Noise를 추가 (평균과 표준 편차)
+- Reverse Diffusion
+  - Denoise 하면서 어떤 Noise를 뺄지 학습 시킴
+- 레이블 
+  - Fowarding 단계에서 추가되는  Noise
+  - 해당 Noise들은 저장되었다가 Reverse 단계에서 Label로 활용한다.
+- Condition
+- Diffusion + VAE 
+  - Stable Diffusion
+
+- 이미지 생성형 모델 WebUI 설치 (스테이블 디퓨전)
+https://github.com/AUTOMATIC1111/stable-diffusion-webui
+모델 정보: https://civitai.com/
+
+
+# RNN
+순차적 데이터 - 현재를 이해하기 위해 과거/미래 영향
+
+## 텍스트 데이터 (시험에 나온다)
+- 단어와 문장 결합. 비정형 데이터. 문맥이 중요함
+- Data Cleansing (데이터 형태) - 텍스트 데이터에서 불필요한 부분(태그, 특수 문자, 공백) 제거
+- Data Filtering (의미) - 개인정보/비밀 정보/오염된 정보 등을 제거
+
+## 텍스트 데이터 처리 - 토큰화 (시험에 나온다)
+- 텍스트 데이터를 단어/구 등, '의미' 있는 최소 단위로 나누는 과정 (토큰 화)
+- 토큰
+  - Word
+  - Subword
+- 토큰화 과정 (전처리)
+  - 1. Tokenize (Batch Size: 3 - 3개 문장 )
+    - A  / Whole / new / World 
+    - Heal  / the / World 
+    - Under / the / sea
+  - 2. 정수화
+    - A (1) / Whole (2) / new (3) / World (4)
+    - Heal (5) / the (6) / World (4)
+    - Under (7) / the (6) / sea (8)
+  - 3. Padding (Sequence Len: 4)
+    - 1 / 2 / 3 / 4 
+    - 5 / 6 / 4 / 0
+    - 7 / 6 / 8 / 0
+- 토큰 실습
+  - https://colab.research.google.com/drive/1PcpZ8LNNtrGiN1eMBYcCYhjk5e2wDXwA?usp=sharing
+  - vocab_size: 토큰의 개수
+  - unk_token: Unknown_token
+  - pad_token: Padding token
+
+### nn.Embedding (시험에 나온다)
+- 임의의 정수가 부여된 예제 'A (1) / Whole (2) / new (3) / World (4)' 
+  - 정수 ID를 부여했을 뿐인데, 모델은 new가 Whole 보다 크다고 생각한다.
+  - Wole이 World 보다 A에 더 가깝다.
+- 벡터화
+  - 하나의 정수가 아니라, 여러 실수의 조합으로 단어를 표현함 
+- 임베딩
+  - 학습을 통해 벡터화 하는 것을 임베딩이라고 한다. 각 벡터는 다 파라미터(W)이다. 
+  - 임베딩 테이블을 유지한다. Padding + Vocab의 개수 크기 사이즈로 인덱싱됨
+
+
+
+# 실습 문제
+- Batch
+- 모델 구현 (TC 통과 시켜서, 파라미터)
+ - 학습문제 (Workshop 수준) : 성능 개선 이전, 최초 학습
+
+# WorkShop day 2
 Q: https://colab.research.google.com/drive/1CwQsd7HSrvlOwClX7sh1XEXJE4h-0iVO?usp=sharing
 S: https://colab.research.google.com/drive/1HyHNPWJ1woRdkjXQ1UW7BkZxFeJ1-1Sl?usp=sharing
 리더보드: http://ai.jaen.kr/leaderboard?competition_name=House+Price+Prediction&course_name=AI+Essential&course_round=0317%281%29
 
 ## 
 https://colab.research.google.com/drive/1GyUl8gcM9Yi1GL5HWS7jy--Vqe0uwonM#scrollTo=ddd1d918
+
+## dgx spark
