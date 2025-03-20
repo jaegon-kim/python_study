@@ -1,5 +1,6 @@
 
-# AI Essential 과정
+AI Essential 과정
+===
 
 강사 : 이우엽
 
@@ -587,7 +588,7 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui
 - Data Filtering (의미) - 개인정보/비밀 정보/오염된 정보 등을 제거
 
 ## 텍스트 데이터 처리 - 토큰화 (시험에 나온다)
-- 텍스트 데이터를 단어/구 등, '의미' 있는 최소 단위로 나누는 과정 (토큰 화)
+- 텍스트 데이터를 단어/구 등을 최소 단위로 나누는 과정 (토큰 화)
 - 토큰
   - Word
   - Subword
@@ -621,6 +622,199 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui
   - 임베딩 테이블을 유지한다. Padding + Vocab의 개수 크기 사이즈로 인덱싱됨
 
 
+## 순환 신경망 개요 (시험에 나온다)
+- 순차 데이터 처리하는 NN. 이전 입력에서 학습한 내용을 현재 학습에 반영할 수 있는 구조
+  - Feed Forward Network: 은닉층의 출력이 출력층 방향으로만 전달
+  - Feed Back Network: 은닉층의 출력이 자기 자신으로 전달 
+
+- 기본 단위 : Cell 
+  - Neuron 과 비슷하지만 Recurrent Path를 갖는다.
+    - h_t = tanh(W_xh* x_t + W_hh * h_t-1 + b_h)
+
+  - ReLU를 쓰지 않고, tanh를 쓴다.
+    - ReLU를 쓰면 Exploring Gradient 문제가 생긴다.
+    - Sigmoid를 쓰면 Vanishing Gradient 문제가 생긴다.
+    - tanh도 Seqeunce가 길어지면 Vanishing Gradient가 발생한다. 
+  - 다음 Step으로 간다.
+
+### Vanilla RNN Cell
+- 출력 결과가 직전 계산 결과에 크게 의존함. 
+- 장기 의존성 문제
+  - 시퀀스 길이가 길어지면 오래된 정보가 뒤로 충분히 전달되지 못한다.
+  - Back Propagation을 하면 오래된 W은 잘 업데이트가 되지 않는다.
+
+### LSTM(Long Short Term Memory) (시험에 나온다)
+- Long Term: 오래 기억될 정보는 Long Term Memory에 저장하겠다.
+- Short Term: 당장 사용될 정보
+- LSTM Cell
+  - σ : Sigmoid 0 ~ 1 사이의 비율, Gate 역할을 한다. Long Term과 Short Term의 비율을 정한다.
+  - f_t : forget gate - h_t-1d에서 들어온 것을 이용해서 Forget 정도를 결정한다.
+  - f_t : input gate - h_t-1d에서 들어온 것을 이용해서 Memory 정보를 결정하고, 그 자체를 tanh를 거쳐 전달한다.
+![](Note_image/lstm_cell.PNG) 
+
+### RNN의 역전파 과정
+- RNN의 역전파는
+  - 계산의 반대 방향 뿐만 아니라 
+  - BTT(Back Propagation Through Time) - 시간을 거슬러 올라가며 계산을 해줌
+![](Note_image/rnn_bptt.PNG) 
+
+### 심화구조
+- 문제 유형에 따라 Unidirectional 또는 Bidirectional 모델을 선택할 수 있음
+  - Unidirectional RNN: 과거 정보만 중요한 경우
+  - Bidirectional RNN: 과거 미래 정보가 모두 중요한 경우
+- Single Layer/Multi Layer
+  - Single Layer:
+    - 많이 쓰이지는 않았지만, Feature 가 1개일 경우 Single Layer를 쓰는 경우도 있다.  
+  - Multi Layer: 
+- Multi Layer 구조
+  - One to One
+  - One to Many
+  - Many to One
+    - 실제로는 Many to Many 이지만, 의미 있는 것이 한개라서..
+    - 분류/회귀, 감성분류
+  - Many to Many (Async)
+    - 자기 회귀적 (Auto Regressive) - 출력을 만들어 낼 때, 이전 출력을 자기 입력으로 받음
+      - 가장 많이 쓰려고 시도한 구조임
+  - Many to Many (Sync)
+
+
+### RNN 실습
+#### 06-021 실행 결과의 분석
+06-021 를 실행하면 LSTM의 W은 업데이트 되지만, Embeding은 업데이트가 잘 되지 않는다.
+왜냐하면 출력층에 가까운 LSTM 만을 업데이트 하는 것 만으로 Loss가 낮아지기 때문이다.
+토큰 임베딩 까지 업데이트 하려면, 모델이 충분히 복잡해야 한다.
+
+### Seq2Seq
+- Async Many to Many와 같은 것이다.
+
+### Attention
+- Seq2Seq 모델에서 인코더와 디코더 간의 정보 전달을 개선하고, 디코더가 인코더의 모든 출력 정보를 활용 할 수 있게 하는 기법
+- Q: Decoder의 Outut
+- K: Encoder의 각 Step의 Output
+- V: Q * K한 가중 합
+
+
+- 유사도 score(Q, K) = Q * K_t
+- Dot Product Attention
+  - Attention (Q, K, V) = softmax(Q * K_t) * V
+    -> 값이 커질 수록 Scale이 커지는 문제가 있음
+- Scaled Dot Product Attention
+  -  Attention (Q, K, V) = softmax(Q * K_t / root(d))
+- Multi heade attention
+- Self attention
+  - 무엇을 학습 하겠다는 것인가 ?
+  - W_q, W_k, W_v를 학습한다. Q, K, V로써의 stance가 달라지는 것을 반영한다.
+
+# Transformer
+- Encoder
+  - 전체 문맥을 보는 강점
+- Decoder
+  - 생성하는 역할
+  - Masked Multi Head Self Attention
+    - Cosal Mask를 사용함. (Softmax에 무한 값을 넣으면 0에 가까운 값이 나옴)
+
+- Feed Forward Network
+  - Transformer의 출력 층에 붙어 있음.
+    - Transformer
+  - Wide 구조 (다각화/Diversification)
+    - DNN에서 층이 깊어 지는 것과 비슷한 효과
+      - 층이 깊어질 수록 Gradient Vanishing 문제가 발생하는데, Wide에서는 이 문제가 상대적으로 덜함
+      - Overfitting을 줄이기에도 좋음
+    - Google이 발표한 Wide & Deep Learning(2016)에서 사용된 개념.
+    - 넓혔다가 줄여주는 행위 
+    - 들어간 데이터를 다각화 했다가, 다시 줄이는 방법
+      - 내부 구조에서 의미 있는 것을 살리고, 의미 없는 것을 필터링하는 효과를 가짐
+
+- Positoinal Encoding
+  - Sinusoidal
+    - 문제가 있긴 하다. 지금은 다른 방식을 쓰고 있다.
+
+- Cross Entropy Loss를 사용한다.
+
+- Attention을 Main 기능으로 쓰는 것은 다 Transformer라고 하고 있음
+
+## BERT(Bidirectional Encoder Representations from Transformers) (2018)
+- Encoder로 구성되어 있음
+  - 단어의 양방향 문맥 파악
+    - 빈칸 채우기
+    - 문장 분류
+    - 문양 유사도
+- Embedding 모델로 지금도 쓰고 있음(동적 임베딩 모델)
+
+## GPT(Generative Pre-trained Transformer) (2018, 2019)
+- Decoder로 구성되어 있음
+  - 문장 생성 
+- GPT3
+  - 사람이 알아 듣는 느낌을 준다. (Attention == In Context Learning / Meta Learning)
+
+## Transformer의 단점
+- Input Sequence의 제곱 만큼의 연산량이 필요함 
+
+
+
+# LangChain (시험에 나옴)
+- LLM을 활용하여 다양한 APP을 구축할 수 있도록 돕는 Python 기반 프레임워크
+  - LLM 통합
+  - Chain: 여러 모델과 API의 결과를 순차적으로 연결
+  - 에이전트
+  - 메모리
+  - 지식 통합 ()
+- 구조
+  - LangChain과 LangGraph를 사용해 앱 개발, LangSmith로 모니터링 및 최적화, LangGraphCloud로 프로덕션 환경에 배포
+  - 기본
+    - LangChain
+    - LangChain-core
+    - LangChain-community
+  - +
+    - LangGraph
+      - Multi Actor Agent를 만드는데 특화된 FW
+      - Agent 들 간의 복잡현 연결 / Workflow를 구성하기 편리하게 되어 있음
+    - LangServe
+    - LangSmith
+- LCEL(LangChain Expression Language)
+  - Lang Chain의 도메인 특화 언어 (DSL)
+  - 구성
+    - Chain 구성 문법 (Chain의 형태를 선언의 형태로 쉽게 연결할 수 있음)
+      - ex) Chain = Pompt | LLM | OutputParser 
+    - Runnable 프로토콜 (Runnalbe 프로토콜을 지키는 컴포넌트를 Runnable 컴포넌트라고 한다.)
+      - Runnalbe 인터페이스(stream, invoke, batch, astream, ainvoke, abatch, astream_log, astream_events)를 Class에서 구현한다.
+
+- Prompt Component
+  - Prompt Template
+    - Dictionary 형태로 입력해 주어야 함
+    - 출력은 Prompt Values로 반환됨
+
+  - Chat Prompt 
+  - Zero
+    - 질문 바로 주고 답을 받는 것 (요청만 함)
+  - One Shot 
+    - Zero Shot (질의 응답) 예시를 하나 주고 질문을 한 뒤 답을 받도록 하는 것.
+
+  - Chat Prompt Template
+  - Role 위치에 들어 갈 수 있는 Key Word는 정해져 있음. system, placeholder, ai, human
+
+  - Few Shot Prompting
+    - 질의 응답을 여러 개 주는 것
+
+
+- Model Component
+  - temperature (default: 1) Softmax 나누기 e^x에서 x 값으로 쓰인다. temparature 가 1이면 model이 준 값을 그대로 줌
+  - temperature 가 1보다 작아 지면, 확률이 큰 것이 더 커진다.
+  - temperature가 1보다 커지면, 큰 놈의 확률이 더 작아진다.
+  - Open AI는 확률이 가장 높은 것을 쓰는 것이 아니라, 정규 분포선에서 랜덤 선택하기 때문에 확률이 가장 높은 것만 선택되지는 않음.
+  - temperature가 커지면 헛소리를 하기 시작한다.
+
+- Output Parser
+
+
+# Streamlit 
+
+
+## 질문 후보
+LSTM에서 h_t 는 최종 적으로 σ(0~1) x tanh (-1~1)의 값이 될것 같은데 X_t 의 디멘전과 h_t의 디멘전을 어떻게 같게
+
+### (시험)
+- 06-020 텍스트 분류기 모델 정의
 
 # 실습 문제
 - Batch
@@ -636,3 +830,10 @@ S: https://colab.research.google.com/drive/1HyHNPWJ1woRdkjXQ1UW7BkZxFeJ1-1Sl?usp
 https://colab.research.google.com/drive/1GyUl8gcM9Yi1GL5HWS7jy--Vqe0uwonM#scrollTo=ddd1d918
 
 ## dgx spark
+
+##
+### ngrok Key
+2uZZsXV9gypN474juTAUIlg1u3W_5xsiTwHmui1gVgzkA4bbn
+
+### Tavily key
+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
