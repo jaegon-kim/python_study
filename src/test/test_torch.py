@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 
 def test_cuda_available(): 
     print("cuda" if torch.cuda.is_available() else "cpu")
+    if (torch.cuda.is_available()):
+        print(torch.cuda.device_count())
+        print(torch.cuda.current_device())
+        print(torch.cuda.get_device_name(0))
 
 def test_1d_tensor():
     t = torch.FloatTensor([0., 1., 2., 3., 4., 5., 6.])
