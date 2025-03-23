@@ -755,22 +755,24 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui
 # LangChain (시험에 나옴)
 - LLM을 활용하여 다양한 APP을 구축할 수 있도록 돕는 Python 기반 프레임워크
   - LLM 통합
-  - Chain: 여러 모델과 API의 결과를 순차적으로 연결
+  - 체인(Chain): 여러 모델과 API의 결과를 순차적으로 연결
   - 에이전트
   - 메모리
   - 지식 통합 ()
+
 - 구조
   - LangChain과 LangGraph를 사용해 앱 개발, LangSmith로 모니터링 및 최적화, LangGraphCloud로 프로덕션 환경에 배포
   - 기본
     - LangChain
     - LangChain-core
     - LangChain-community
-  - +
+  - 추가 구조
     - LangGraph
       - Multi Actor Agent를 만드는데 특화된 FW
       - Agent 들 간의 복잡현 연결 / Workflow를 구성하기 편리하게 되어 있음
     - LangServe
     - LangSmith
+
 - LCEL(LangChain Expression Language)
   - Lang Chain의 도메인 특화 언어 (DSL)
   - 구성
@@ -810,6 +812,152 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui
 # Streamlit 
 
 
+# RAG (Retrieval - Augmented Generation) (시험에 나옴)
+
+## 개요
+- 프롬프트를 증강 시키기 위한 기술 (프롬프트를 잘 만들기 위한 것임)
+- 정확도와 신뢰성을 높임 (환각을 줄임)
+- RAG로 작은 모델의 성능을 보완하려는 생각은 하지 말자. 오래된 모델의 정보를 업데이트 하는 용도로 활용하자.
+
+- RAG 단계
+  - Indexing (저장소 생성) (시험에 나옴)
+    - 오프라인 단계(Test 이전 단계를 의미함). DB/Web Site Doc에서 문서 수집. 수집된 데이터를 정리아혀 필요없는 정보 제거. 토큰화 하여 검색에 적합한 형태로 만듦.
+
+    - 순서 예시
+      - 데이터 로드 (Load)
+        - TXT 엔진, PDF 엔진, HTML 엔징 등 로더들이 다 다름
+
+      - 텍스트 분할 (Split)
+        - 문서가 작아지면 유사도 검색이 쉬워짐. 그러나 반환 되는 문서가 작으므로 포함된 정보가 부족
+          - Multi Vector Retrieval : 작은 문서로 검색이 되면, 해당 문서가 있던 원래 문서를 반환 하는 것
+        - 문서가 커지면 편차가 커져서 유사도 검색이 어려워짐. 
+
+      - 임베딩/저장 및 인덱싱 (Store)
+        - 임베딩 Vector는 워드 임베딩이 없으므로 가져다가 써야 함
+
+  - Retreival and generation (시험에 나옴)
+    - 검색 
+      - 키워드 기반 검색 (BM25 - Elastic Search 등에서 사용)
+      - TF-IDF (문서 희귀도) 기반을 통해 검색을 하기도 해줌
+      - 벡터 기반 검색 (임베딩 유사도 검색)
+    - Top K 개 문서를 반환해 줌
+  
+  - Chain
+    - 질문 --> 검색 --> 프롬프트 --> LLM --> 정답
+      - 질문이 프롬프트로 직접 전달되는 By Pass 경로도 있음
+
+- 토큰 임베딩/Setence 임베딩
+   - 토큰 임베딩: 토큰들 과의 관계
+   - Setence 임베딩: 문장들 간의 유사도 (아마 토큰 임베딩을 활용해서 문잔들 자체의 임베딩을 만들어 놓았을 듯함)
+
+## Lang Chain RAG 지원 
+- Lang Chain에서 Threshold와 MMR을 이용한 유사도 검색 기준 방법을 지원한다. 
+
+- MMR(Maximum Marginal Relevance)
+   - 유사도가 높은 것은 추가적인 정보 획득의 효과가 적음
+   - 유사도와 '다양성'을 밸런싱
+
+## Agent 
+- 특정 작업을 수행하거나 문제를 해결하기 위해 다양한 도구들을 사용하는 역할
+  - 단순한 질의 응답 기능을 넘어 다양한 외부 도구와 상호 작용할 수 있는 지능적인 시스템
+- RAG는 AI Agent 가 활용할 수 있는 지식 검색의 방안이라고 할 수 있음
+- Lang Chain은 구현이 매우 간단함.
+  - Lang Graph 같은 FW등을 쓰는 것이 더 나음.
+
+
+### ReAct (Reasoning and Acting)
+- AI 시스템이 문제를 해결할 때, 추론(reasoning)과 행동(acting)을 동시 수행하는 방법론
+
+#### Reasoning 구현 방법
+- Human Interaction Reasoning
+- Reasoning Model (모델 자체가 추론)
+  - Fine Tuning (?)
+    - 방안 1) Label이 Chain Of Thought 임. 즉, CoT 과정을 Training 함
+    - 방안 2) 강화학습. Chain of Thought의 각 단계를 episode로 취급하여 강화학습 수행 
+  - O1/O3 등은 Web 검색등은 하지 않음 ...
+    - 추론 중간에 검색을 할 수 있어야 함.
+- Reasoning & Acting 
+  - Human - Agent - 도구 (LLM, Tools)
+    - 답을 하기 어려우면 검색을 수행함
+  - ChatGPT 4o
+  
+- Open AI의 Functions Agent
+
+## RAG
+- LLM은 Metric으로 평가 측정하는 시대는 지났음.
+
+### RAGAS
+- 평가 방법
+  - Generation: 생성된 답변의 품질이 어떤가
+  - 검색이 얼마나 잘 되었는가
+- 평가 척도
+  - Generation
+    - Faithfulness 
+      - Context가 사실로 봤을 때, 만들어진 문장이 사실(Context에 포함된 정보)에 부합하는가 ?
+      - Claim 중에서 맞춘 Claim이 몇개 인지
+    - Answer Relevance
+      - 만들어진 결과가 질문에 부합하게 만들어 졌는가 ?
+        - 답변에 기반해서, n개 질문을 다시 만들고, 만들어진 질문과 원래 질문 과의 Cosine 유사도를 계산함.
+  - Retrieval
+    - Context Recall 
+      - Recall :재현율/민감도, 2진 분류라면 얼마자 1을 맞췄는지 평가 하는 평가, 잘 맞췄는가를 평가하는 것이 아니다
+      - 틀린 정보를 얼마나 가지고 있는가는 보지 않고, 사실의 정보를 Claim 별로 얼마나 갖춰져 있는지
+      - Positive를 얼마나 많이 맞추는가
+      - 예)
+        - 정상 100, 코로나 100 (전체 100)
+        - 코로나 환자가 200 이라고 하면 코로나 100을 다 커버하니까 Recall이 높다.
+    - Context Precison
+      - Positive를 얼마나 적게 틀리는가 
+      - 예)
+        - 정상 100, 코로나 100 (전체 100)
+        - 정상 190, 코로나 10이라고 하면 아무튼 100명중 10명알 맞췄으니까 Precison이 높다
+          - F1 Score
+          - Answer Precision
+      - 틀렸다 : 순서가 잘못됨 
+
+# Fine Tuning
+## Knowlege Distillation
+### 방법 1
+- 큰 모델의 지식을 작은 모델로 압축하는 기법
+  - 400B --> 70B/10B/8B
+  - Teacher Model(교사 모델): 학습된 대형 모델로, 성능이 뛰어나지만 계산량이 많고 메모리를 많이 차지하는 모델
+  - Student Model(학생 모델): 교사 모델로 부터 지식을 학습하는 작은 모델. 교사 모델과 유사한 성능을 갖지만 연산 자원이 적음
+    - Teacher Model의 분포를 모방한다.
+      - Teacher Model은 Soft Label을 만들고, Student Model는 Soft Prediction을 만들어서 Loss Func을 만든다. --> distill lation loss
+      - 동시에 Student prediction은 Hard Prediction과 Hard Label을 이용하여 Label을 계산한다. 
+
+
+  - Teacher Model을 동렬하고, Soft Label을 만든다.
+
+### 방법 2
+- Input 데이터를 Teacher Model에 넣어서 Label을 만들어서 Training Set을 만든다.
+  - 출력의 분포가 잘 샘플링 된 데이터만 학습될 것이다. (노이즈를 학습되지 않는...)
+- 해당 Trainsing Set으로 Studnet Model을 Supervised Learning 시킨다.
+
+
+## PEFT (Parameter Efficient Fine Tuning)
+- 사전 학습된 언어 모델의 파라미터들을 동결하고 Adapter 계층을 추가하여 학습 시킴
+
+### LoRA(Low Rand Adaptation)
+- 대규모 모델의 가중치를 그대로 유지하면서 Low Rand Matrix Factorization을 통해 적은 수의 추가 파라미터를 도입
+- Matrix Fatorization (원래는 Matrix를 분해하는 것인데)
+  - LoRA는 분해되어 있는 Matrix를 합치는 동작을 수행함 .
+    - (N x 1 ) * (1 x M) = (N * M) 행렬이 됨. 학습은 '(N x 1 ) * (1 x M)'를 학습 시킴
+
+![](Note_image/lora.PNG)
+
+
+#### QLoRA
+- Pretrained Model을 양자화 한 다음에 Freeze 하고 학습을 진행
+
+#### LoftQ
+- Pretrained Model은 그대로 두고, Adapter를 양자화
+
+#### RSLoRA
+
+
+
+
 ## 질문 후보
 LSTM에서 h_t 는 최종 적으로 σ(0~1) x tanh (-1~1)의 값이 될것 같은데 X_t 의 디멘전과 h_t의 디멘전을 어떻게 같게
 
@@ -831,9 +979,16 @@ https://colab.research.google.com/drive/1GyUl8gcM9Yi1GL5HWS7jy--Vqe0uwonM#scroll
 
 ## dgx spark
 
-##
-### ngrok Key
-2uZZsXV9gypN474juTAUIlg1u3W_5xsiTwHmui1gVgzkA4bbn
+## 6~7일차 이러닝 학습
+### 6일차 오전 수업
+- https://lc.multicampus.com/dx_ai_essential/#/me/lms
+- 월요일 12시 까지 완료할 것
 
-### Tavily key
-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
+### 6일차 오후 수업
+
+### 미니 프로젝트
+드래그 복사 붙여넣기로 아래 링크에 접속하셔서 사본으로 저장하신 후 진행하시면 됩니다.
+[  https://colab.research.google.com/drive/1Ajj_Goj_3YKy7hudNmZ_tbQKEqlSToqI?usp=sharing ]
+
+아래는 리더보드 사이트입니다.
+[ http://ai.jaen.kr/leaderboard?competition_name=AI+Pair+Programmer&course_name=AI+Essential&course_round=0317%281%29 ]
