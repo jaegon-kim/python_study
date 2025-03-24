@@ -992,3 +992,37 @@ https://colab.research.google.com/drive/1GyUl8gcM9Yi1GL5HWS7jy--Vqe0uwonM#scroll
 
 아래는 리더보드 사이트입니다.
 [ http://ai.jaen.kr/leaderboard?competition_name=AI+Pair+Programmer&course_name=AI+Essential&course_round=0317%281%29 ]
+
+
+
+
+https://drive.google.com/drive/folders/1P4L6BWWRh8cEI6QeCLIxTEBqar3x7TsN
+https://colab.research.google.com/drive/1FZTk6YQGAPuwn8Xr6a0FkzrBMXoPNjRR#scrollTo=Ym2ZMNqddf3W
+https://colab.research.google.com/drive/1q-B58ccSUkFZYA065bz-f7zY6IRiT28i#scrollTo=5f36334e
+https://mm.jaen.kr/ai-essential-67/channels/off-topic
+https://lc.multicampus.com/dx_ai_essential/#/survey/excute/SURVY202503191344248
+
+파이토치 텐서 18, 20, 23, 26, Lab1 연습문제
+머신러닝 학습 절차 34-35
+머신러닝 학습 유형 37
+심층신경망 45
+뉴런(퍼셉트론) 47
+손실함수 50
+최적화도구(optimizer) 68-69
+데이터로더 71-76, Lab1 연습문제
+DNN 모델 구성 81
+
+DNN 모델링 83-88, Lab1 연습문제, WS1
+과적합 90-91
+배치정규화 99-100
+합성곱층 105-106
+풀링층 113-114
+CNN 모델 구성 121-123, Lab2 연습문제, WS2
+전이학습 125
+임베딩 160
+순환신경망168-169
+LSTM 172-173
+LSTM 모델 구성 181-182, Lab3 연습문제, WS3
+랭체인 215-216
+RAG 246-251
+벡터스토어 260
