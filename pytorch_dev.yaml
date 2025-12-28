@@ -33,3 +33,16 @@ spec:
       hostPath:
         path: /home/sdn/Workspace/python_study
         type: Directory
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pytorch-modelhub
+spec:
+  selector:
+    app: pytorch-dev
+  ports:
+    - port: 8080
+      targetPort: 8080
