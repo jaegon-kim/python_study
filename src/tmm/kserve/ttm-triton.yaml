@@ -5,5 +5,5 @@ metadata:
 spec:
   predictor:
     triton:
-      storageUri: pvc://YOUR_PVC_NAME/triton_model_repository
+      storageUri: http://ubuntu-dev-1-svc.default.svc.cluster.local:8080/triton_model_repository.tar.gz
       runtimeVersion: "23.10-py3"

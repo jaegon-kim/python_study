@@ -3,5 +3,5 @@ numpy
 pandas
 sktime
 torch==2.3.1+cpu
-transformers
-accelerate>=0.26.0
+transformers==4.38.2
+accelerate==0.27.2
