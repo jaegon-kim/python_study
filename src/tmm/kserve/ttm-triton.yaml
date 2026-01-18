@@ -1,0 +1,9 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: ttm-triton
+spec:
+  predictor:
+    triton:
+      storageUri: pvc://YOUR_PVC_NAME/triton_model_repository
+      runtimeVersion: "23.10-py3"
