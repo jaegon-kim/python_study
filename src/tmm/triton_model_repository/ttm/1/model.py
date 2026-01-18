@@ -22,7 +22,16 @@ class TritonPythonModel:
         deps_dir = Path(__file__).resolve().parent / "python"
         if deps_dir.exists():
             sys.path.insert(0, str(deps_dir))
-        self._model_path = os.environ.get("TTM_MODEL_PATH") or None
+        bundled_model_dir = Path(__file__).resolve().parent / "ttm_model"
+        env_model_path = os.environ.get("TTM_MODEL_PATH")
+        if env_model_path:
+            self._model_path = env_model_path
+        elif bundled_model_dir.exists():
+            self._model_path = str(bundled_model_dir)
+            os.environ.setdefault("HF_HUB_OFFLINE", "1")
+            os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+        else:
+            self._model_path = None
 
     def execute(self, requests):
         responses = []

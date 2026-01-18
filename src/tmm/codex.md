@@ -35,7 +35,8 @@ python scripts/run_ttm_airline_zeroshot.py
     - `/v2/models/ttm/infer` returns `y_pred` with 3 values.
 - Make targets:
   - `make triton` builds venv + tar
-  - `make clean` removes tar + venv
+  - `make clean` removes tar
+  - `make clean-all` removes tar + venv + bundled model
 
 ### Commands used (for reproducibility)
 ```bash
@@ -67,11 +68,14 @@ tar -czf /root/Workspace/python_study/src/tmm/triton_model_repository.tar.gz \
 ### Notes
 - Triton 23.10 uses Python 3.10; venv must be built with Python 3.10 or pandas/ABI errors occur.
 - Serve the tar via HTTP and ensure KServe can fetch it (storage-initializer expects a tar/gzip Content-Type).
+- `build_triton_venv.sh` downloads the Hugging Face model snapshot (`ibm/TTM`) into `ttm/1/ttm_model` for offline use.
 - Inference call (Triton V2 HTTP):
   - Inputs: `y` (FP32, len 12), `fh` (INT64, len 3)
   - Output: `y_pred` (FP32, len 3)
 - Model runtime tweaks in `triton_model_repository/ttm/1/model.py`:
   - Add venv site-packages to `sys.path`
   - Set HF cache env vars to `/tmp/huggingface`
+  - Use bundled model path at `ttm/1/ttm_model` when `TTM_MODEL_PATH` is unset
+  - Set `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` when bundled model is used
   - If `TTM_MODEL_PATH` is not set, use `fit_strategy="full"`
   - Pass `training_args={"output_dir": "/tmp/ttm_train"}`
